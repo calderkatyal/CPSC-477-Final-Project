@@ -48,8 +48,7 @@ def preprocess_emails(input_path: str, output_path: str) -> pd.DataFrame:
     df = load(input_path)
     df_parsed = df["message"].apply(parse_headers).apply(pd.Series)
     df = df.join(df_parsed)  
-    return df
-    #save(df, output_path)
+    save(df, output_path)
 
 
 if __name__ == "__main__":
