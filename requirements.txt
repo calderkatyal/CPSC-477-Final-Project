@@ -1,0 +1,12 @@
+numpy
+pandas
+torch
+transformers
+elasticsearch
+faiss-cpu
+spacy
+nltk
+scipy
+matplotlib
+seaborn
+jupyter 
