@@ -1,62 +1,29 @@
 """
-Email preprocessing utilities for preparing data for embedding generation.
+Email preprocessing with parallel processing support.
 """
+
 import pandas as pd
 import re
-import spacy
 import os
-from typing import Dict, List
+from typing import Dict, List, Tuple
 from dataloader import load, save
 from datetime import datetime
 import email.utils
 from tqdm import tqdm
 import logging
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from multiprocessing import cpu_count
+import numpy as np
 
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(message)s'  # Simplified format
-)
+# Initialize logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Initialize spaCy for text processing
-logger.info("Loading spaCy model...")
-nlp = spacy.load("en_core_web_sm")
+# Register tqdm for pandas
+tqdm.pandas()
 
-def parse_headers(txt: str) -> dict:
-    """Parse email headers and body from raw text."""
-    flags = re.MULTILINE
-    s = re.search(r"^From:\s*(.*)$", txt, flags)
-    r = re.search(r"^To:\s*(.*)$", txt, flags)
-    c = re.search(r"^Cc:\s*(.*)$", txt, flags)
-    sbj = re.search(r"^Subject:\s*(.*)$", txt, flags)
-    date_str = re.search(r"^Date:\s*(.*)$", txt, flags)
-    
-    # Parse date if present
-    date = None
-    if date_str:
-        try:
-            date_tuple = email.utils.parsedate_tz(date_str.group(1))
-            if date_tuple:
-                date = datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
-        except Exception as e:
-            logger.warning(f"Could not parse date: {date_str.group(1)}")
-    
-    parts = txt.split("\n\n", 1)
-    b = parts[1].strip() if len(parts) > 1 else txt.strip()
-    return {
-        "sender": s.group(1) if s else "Unknown",
-        "recipient": r.group(1) if r else "Unknown",
-        "cc": c.group(1) if c else "Unknown",
-        "subject": sbj.group(1) if sbj else "No Subject",
-        "date": date,
-        "body": b
-    }
-
-def clean_body(body: str) -> str:
-    """Cleans body of email for embedding generation."""
-    # Common signoffs that only appear at the end
-    signoffs = [
+# Email signoff patterns
+SIGNOFF_PATTERNS = [
         # Professional closings
         r"\n\s*Best regards,.*$",
         r"\n\s*Regards,.*$",
@@ -104,83 +71,133 @@ def clean_body(body: str) -> str:
         r"\n\s*[A-Z][a-z]+ [A-Z]\.$",  # First Initial
         r"\n\s*[A-Z][a-z]+ [A-Z][a-z]+ [A-Z]\.$",  # First Middle Initial
     ]
-    
-    # Remove signoffs from the end of the email
-    for signoff in signoffs:
-        body = re.sub(signoff, "", body, flags=re.IGNORECASE | re.MULTILINE)
-    
-    # Process with spaCy
-    doc = nlp(body)
-    
-    # Keep only meaningful tokens (remove stopwords, punctuation, and whitespace)
-    cleaned_tokens = [
-        token.lemma_.lower() 
-        for token in doc 
-        if not (token.is_stop or token.is_punct or token.is_space)
-    ]
-    
-    return " ".join(cleaned_tokens)
 
-def clean_subject(subject: str) -> str:
-    """Cleans subject line of email."""
-    subject = re.sub(r"^(re|fwd):", "", subject.lower())
-    return subject.strip()
+SIGNOFF_REGEX = re.compile("|".join(SIGNOFF_PATTERNS), flags=re.IGNORECASE|re.MULTILINE)
+PUNCTUATION_REGEX = re.compile(r'[^\w\s]')
+SUBJECT_CLEAN_REGEX = re.compile(r'^(re|fwd):\s*', flags=re.IGNORECASE)
 
-def preprocess_emails(input_path: str, output_path: str) -> Dict[str, pd.DataFrame]:
-    """Preprocess emails and organize by person."""
-    # Load and parse emails
-    df = load(input_path)
-    logger.info(f"Processing {len(df)} emails...")
+def parse_headers(txt: str) -> dict:
+    """Thread-safe header parsing function."""
+    headers = {
+        "sender": "Unknown",
+        "recipient": "Unknown",
+        "cc": "Unknown",
+        "subject": "No Subject",
+        "date": None,
+        "body": txt.strip()
+    }
+
+    patterns = {
+        "sender": r"^From:\s*(.*)$",
+        "recipient": r"^To:\s*(.*)$",
+        "cc": r"^Cc:\s*(.*)$",
+        "subject": r"^Subject:\s*(.*)$",
+        "date": r"^Date:\s*(.*)$"
+    }
+
+    for field, pattern in patterns.items():
+        match = re.search(pattern, txt, re.MULTILINE)
+        if match:
+            headers[field] = match.group(1)
+
+    if headers["date"]:
+        try:
+            date_tuple = email.utils.parsedate_tz(headers["date"])
+            if date_tuple:
+                headers["date"] = datetime.fromtimestamp(email.utils.mktime_tz(date_tuple))
+        except Exception:
+            logger.debug(f"Date parse failed: {headers['date']}")
+
+    parts = txt.split("\n\n", 1)
+    if len(parts) > 1:
+        headers["body"] = parts[1].strip()
+
+    return headers
+
+def clean_text_batch(texts: pd.Series, is_body: bool) -> pd.Series:
+    """Vectorized text cleaning for entire columns"""
+    if is_body:
+        texts = texts.str.replace(SIGNOFF_REGEX, "", regex=True)
+        texts = texts.str.lower()
+        texts = texts.str.replace(PUNCTUATION_REGEX, " ", regex=True)
+        return texts.str.split().str.join(" ")
+    return texts.str.replace(SUBJECT_CLEAN_REGEX, "", regex=True).str.lower().str.strip()
+
+def process_chunk(args: Tuple[pd.DataFrame, bool]) -> pd.DataFrame:
+    """Process a chunk of emails with full preprocessing."""
+    chunk, test_mode = args
+    try:
+        # Parse headers 
+        parsed = chunk["message"].apply(parse_headers).apply(pd.Series)
+        chunk = pd.concat([chunk, parsed], axis=1)
+        
+        chunk["subject"] = clean_text_batch(chunk["subject"], False)
+        chunk["body"] = clean_text_batch(chunk["body"], True)
+        
+        return chunk
+    except Exception as e:
+        logger.error(f"Error processing chunk: {e}")
+        if test_mode:
+            raise
+        return pd.DataFrame()
+
+def parallel_preprocess(df: pd.DataFrame, workers: int = None, test_mode: bool = False) -> pd.DataFrame:
+    """Process DataFrame in parallel chunks."""
+    workers = workers or cpu_count() * 2  # Use all available cores
+    chunk_size = min(10000, len(df) // workers)  # Optimal chunk size
     
-    # Parse headers with progress bar
-    logger.info("Parsing headers...")
-    df_parsed = df["message"].progress_apply(parse_headers).apply(pd.Series)
-    df = df.join(df_parsed)
+    results = []
+    with ProcessPoolExecutor(max_workers=workers) as executor:
+        chunks = np.array_split(df, workers * 4)  # More chunks for better load balancing
+        futures = {
+            executor.submit(process_chunk, (chunk, test_mode)): i
+            for i, chunk in enumerate(chunks)
+        }
+        
+        for future in tqdm(as_completed(futures), total=len(futures), desc="Processing chunks"):
+            results.append(future.result())
     
-    # Clean text fields with progress bars
-    logger.info("Cleaning subjects...")
-    df["subject"] = df["subject"].progress_apply(clean_subject)
-    
-    logger.info("Cleaning bodies...")
-    df["body"] = df["body"].progress_apply(clean_body)
-    
-    # Sort by date if available
-    if "date" in df.columns:
-        df = df.sort_values("date")
-    
-    # Create dictionary of dataframes by person
+    return pd.concat(results, ignore_index=True)
+
+def organize_by_person(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
+    """Organize processed emails by person."""
     person_dfs = {}
+    all_people = pd.concat([df["sender"], df["recipient"]]).dropna().unique()
     
-    # Process both senders and recipients
-    all_people = pd.concat([df["sender"], df["recipient"]]).unique()
-    logger.info(f"Found {len(all_people)} unique people")
-    
-    # Process each person with progress bar
-    logger.info("Organizing emails by person...")
-    for person in tqdm(all_people, desc="Processing people"):
+    for person in tqdm(all_people, desc="Organizing by person"):
         if person == "Unknown":
             continue
             
-        # Get all emails where this person is either sender or recipient
-        person_emails = df[
+        emails = df[
             (df["sender"] == person) | 
             (df["recipient"] == person) |
             (df["cc"].str.contains(person, na=False))
         ].copy()
         
-        # Add direction column (sent/received)
-        person_emails["direction"] = person_emails.apply(
-            lambda row: "sent" if row["sender"] == person else "received",
-            axis=1
+        emails["direction"] = emails["sender"].apply(
+            lambda x: "sent" if x == person else "received"
         )
         
-        if not person_emails.empty:
-            person_dfs[person] = person_emails
+        if not emails.empty:
+            person_dfs[person] = emails
     
-    # Save the processed data
-    save(df, output_path)
-    logger.info(f"Processed {len(person_dfs)} people's emails")
+    return person_dfs
+
+def preprocess_emails(input_path: str, output_path: str, workers: int = None) -> Dict[str, pd.DataFrame]:
+    """Main preprocessing pipeline with parallel processing."""
+    logger.info("Loading raw emails...")
+    df = load(input_path)
     
+    logger.info("Starting parallel processing...")
+    processed_df = parallel_preprocess(df, workers=workers)
+    
+    logger.info("Organizing by person...")
+    person_dfs = organize_by_person(processed_df)
+    
+    logger.info("Saving processed data...")
+    save(processed_df, output_path)
+    
+    logger.info(f"Processed {len(person_dfs)} people with {len(processed_df)} total emails")
     return person_dfs
 
 if __name__ == "__main__":
@@ -188,4 +205,5 @@ if __name__ == "__main__":
     RAW_CSV_PATH = os.path.join(BASE_DIR, "data", "raw", "emails.csv")
     PROCESSED_PATH = os.path.join(BASE_DIR, "data", "processed", "emails.parquet")
     
-    person_dfs = preprocess_emails(RAW_CSV_PATH, PROCESSED_PATH)
+    workers = cpu_count() * 2  # Utilize all CPU cores
+    preprocess_emails(RAW_CSV_PATH, PROCESSED_PATH, workers=workers)
