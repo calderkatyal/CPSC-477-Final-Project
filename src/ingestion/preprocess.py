@@ -27,6 +27,25 @@ def parse_headers(txt: str) -> dict:
     sbj = re.search(r"^Subject:\s*(.*)$", txt, flags)
     parts = txt.split("\n\n", 1)
     b = parts[1].strip() if len(parts) > 1 else txt.strip()
+    #The way our tool would be applied is that a user would use it to search their own email. 
+    #As such, the query "about my weekly session" has a very different meaning than "about John's weekly session".
+    #Moreover, as mentioned, we may want go beyond the most basic method of finding relevant emails
+    #which is basically just using a tool to generate embeddings for queries and emails.
+    #(For instance, one thing we discussed was incorporating the information of the person you are corresponding with
+    #into the embedding for a given email, because that adds significant context. This embedding would be generated
+    #using all of the emails between you and this person (probably with an RNN/LSTM or something like that)).
+    #For these reasons, it might be worth
+    #it to organize our emails in our database accordingly. Currently, our dataset is a bunch of emails. We might want 
+    #to reorganize. We could have that, for every person (email address) in the database, our dataset has their "email box",
+    #meaning a "sent" group and a "received" group. 
+    #For illustration, an example path in this dataset would be: Dataset -> John Smith -> Sent -> An Email.
+
+    #Just a note that it may also make sense to later include a date field if we decide to do more complicated stuff with regards
+    #to determining associations. Along these lines, it may also make sense to add a signature field so that we could explicitly parse 
+    #out sentiment from the signature in order to get a better sense of how the email may relate to certain queries. Presumably, we want 
+    #to remove the signature from the body to avoid it creating noise in terms of generating embeddings to capture the meaning of the email,
+    #but, to not lose the possibly useful context it provides, we could keep it separately with this field. 
+
     return {
         "sender": s.group(1) if s else "Unknown",
         "recipient": r.group(1) if r else "Unknown",
