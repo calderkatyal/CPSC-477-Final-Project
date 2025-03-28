@@ -41,7 +41,10 @@ def parse_headers(txt: str) -> dict:
     #For illustration, an example path in this dataset would be: Dataset -> John Smith -> Sent -> An Email.
 
     #Just a note that it may also make sense to later include a date field if we decide to do more complicated stuff with regards
-    #to determining associations.
+    #to determining associations. Along these lines, it may also make sense to add a signature field so that we could explicitly parse 
+    #out sentiment from the signature in order to get a better sense of how the email may relate to certain queries. Presumably, we want 
+    #to remove the signature from the body to avoid it creating noise in terms of generating embeddings to capture the meaning of the email,
+    #but, to not lose the possibly useful context it provides, we could keep it separately with this field. 
 
     return {
         "sender": s.group(1) if s else "Unknown",
