@@ -14,7 +14,25 @@ def clean_body(body: str) -> str:
         String containing cleaned body
     """
 
-    #add some more cleaning here, e.g. detecting and removing signatures
+    #add some more cleaning here
+
+    #detect standard signatures which don't add too much context to tone of email
+    #reg expressions here capture the signature and everything afterwards (name, maybe contact info, etc.)
+    standard_signatures_regex = [
+        r"\nBest,.*",
+        r"\nBest regards,.*",
+        r"\nRegards,.*",
+        r"\nThanks in advance,.*",
+        r"\nMany thanks,.*",
+        r"\nSincerely,.*",
+        r"\nCheers,.*",
+        r"\nKind regards,.*",
+        r'\n\w+ \| .*\n' # for business sign-offs, where people do Name | Company or something
+    ]
+    
+    #look for signature - if find, remove it and everything afterwards
+    for regex in standard_signatures_regex:
+        text = re.sub(regex,"",text,flags=re.IGNORECASE)    
 
     #create a list of token objects with relevant attributes
     processed_body = nlp(body) 
