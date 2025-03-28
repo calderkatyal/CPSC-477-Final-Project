@@ -44,13 +44,3 @@ We generate $K$ similar queries and then calculate weighted MSE to measure simil
 
 **Human Evaluation:**  
 We generate queries and evaluate rankings as a sanity check.
-
----
-
-## References
-
-1. BM25  
-2. Sentence-BERT  
-3. Seq2SQL  
-4. SQLNet  
-5. Reciprocal Rank Fusion (RRF)
