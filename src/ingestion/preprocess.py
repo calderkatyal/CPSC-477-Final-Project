@@ -40,6 +40,9 @@ def parse_headers(txt: str) -> dict:
     #meaning a "sent" group and a "received" group. 
     #For illustration, an example path in this dataset would be: Dataset -> John Smith -> Sent -> An Email.
 
+    #Just a note that it may also make sense to later include a date field if we decide to do more complicated stuff with regards
+    #to determining associations.
+
     return {
         "sender": s.group(1) if s else "Unknown",
         "recipient": r.group(1) if r else "Unknown",
