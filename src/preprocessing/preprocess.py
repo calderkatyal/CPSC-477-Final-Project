@@ -10,7 +10,6 @@ import logging
 from concurrent.futures import ProcessPoolExecutor
 from multiprocessing import cpu_count
 import numpy as np
-from nltk.corpus import stopwords
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -21,9 +20,6 @@ tqdm.pandas()
 PUNCTUATION_REGEX = re.compile(r'[^\w\s]')
 SUBJECT_CLEAN_REGEX = re.compile(r'^(re|fwd):\s*', flags=re.IGNORECASE)
 
-# Stopwords set
-STOPWORDS = set(stopwords.words('english'))
-
 def parse_headers(txt: str) -> dict:
     """Parse subject, date, and body from raw message text."""
     headers = {
@@ -32,7 +28,6 @@ def parse_headers(txt: str) -> dict:
         "body": txt.strip()
     }
 
-    # Extract headers
     patterns = {
         "subject": r"^Subject:\s*(.*)$",
         "date": r"^Date:\s*(.*)$"
@@ -55,65 +50,57 @@ def parse_headers(txt: str) -> dict:
     parts = txt.split("\n\n", 1)
     if len(parts) > 1:
         headers["body"] = parts[1].strip()
+
     return headers
 
 def clean_text(texts: pd.Series, is_body: bool) -> pd.Series:
-    """Lowercase, remove punctuation, remove stopwords, and normalize whitespace."""
-    texts = texts.fillna("").astype(str)  # Ensure all entries are strings
+    """Lowercase, remove punctuation, and normalize whitespace."""
+    texts = texts.fillna("").astype(str)
     texts = texts.str.lower().str.replace(PUNCTUATION_REGEX, " ", regex=True)
-    texts = texts.str.split().apply(lambda words: ' '.join([word for word in words if word not in STOPWORDS]))
+    texts = texts.str.split().apply(lambda words: ' '.join([word for word in words]))
 
     if not is_body:
         texts = texts.str.replace(SUBJECT_CLEAN_REGEX, "", regex=True).str.strip()
     return texts
 
 def process_row(message: str) -> dict:
-    """Process a single raw email message."""
     return parse_headers(message)
 
 def parallel_preprocess(df: pd.DataFrame, workers: int = None) -> pd.DataFrame:
-    """Preprocess emails using multiprocessing."""
     workers = workers or cpu_count() * 2
     with ProcessPoolExecutor(max_workers=workers) as executor:
         parsed_list = list(tqdm(executor.map(process_row, df["message"]), total=len(df), desc="Processing emails"))
-    
+
     parsed_df = pd.DataFrame(parsed_list)
     df = pd.concat([df.reset_index(drop=True), parsed_df], axis=1)
 
-    # Clean text
     df["subject"] = clean_text(df["subject"], is_body=False)
     df["body"] = clean_text(df["body"], is_body=True)
+
     return df
 
 def organize_by_person(df: pd.DataFrame) -> Dict[str, pd.DataFrame]:
-    """Group emails by person and assign direction using only 'file' field."""
+    """Group emails by top-level mailbox owner only."""
     df = df.copy()
-
-    # Extract person and direction
     df['person'] = df['file'].apply(lambda x: str(x).split('/')[0])
-    df['direction'] = df['file'].apply(lambda x: 'sent' if 'sent' in x.lower() else 'received')
-
     return dict(tuple(df.groupby('person')))
 
 def preprocess_emails(input_path: str, output_path: str, workers: int = None) -> Dict[str, pd.DataFrame]:
-    """Main preprocessing pipeline."""
     logger.info("Loading raw emails...")
     df = load(input_path)
 
-    # 🚨 Drop non-sent/inbox emails immediately
-    df = df[df['file'].str.contains(r'(sent|inbox)', flags=re.IGNORECASE, na=False)].copy()
-    logger.info(f"Retained {len(df)} emails after filtering for 'sent' or 'inbox' in file path.")
+    logger.info(f"Loaded {len(df)} emails from raw file.")
 
     logger.info("Parsing and cleaning emails...")
     processed_df = parallel_preprocess(df, workers=workers)
 
-    logger.info("Organizing emails by person...")
+    logger.info("Organizing emails by mailbox owner...")
     person_dfs = organize_by_person(processed_df)
 
     logger.info("Saving cleaned dataset...")
     save(processed_df, output_path)
 
-    logger.info(f"Completed: {len(person_dfs)} people with {len(processed_df)} emails total.")
+    logger.info(f"✅ Completed: {len(person_dfs)} people with {len(processed_df)} emails total.")
     return person_dfs
 
 if __name__ == "__main__":
@@ -123,3 +110,8 @@ if __name__ == "__main__":
 
     workers = cpu_count() * 2
     person_dfs = preprocess_emails(RAW_CSV_PATH, PROCESSED_PATH, workers=workers)
+
+    # Optional: Print how many emails per person
+    print("\n📬 Emails per person:")
+    for person, df in sorted(person_dfs.items(), key=lambda x: len(x[1]), reverse=True):
+        print(f"{person:<20} {len(df)} emails")
