@@ -67,13 +67,21 @@ def preprocess_emails(
     emails['CleanedAlias'] = emails['ExtractedFrom'].progress_apply(extract_alias)
     emails['SenderName'] = emails['CleanedAlias'].map(alias_to_name)
 
+    # 🛠 Fill missing ExtractedFrom using CleanedAlias
+    emails['ExtractedFrom'] = emails['ExtractedFrom'].fillna(emails['CleanedAlias'])
+
     logger.info("Cleaning subject and body...")
     emails['subject'] = clean_text(emails['ExtractedSubject'], is_body=False)
     emails['body'] = clean_text(emails['ExtractedBodyText'], is_body=True)
 
     logger.info("Parsing dates...")
     emails['date'] = emails['ExtractedDateSent'].progress_apply(
-        lambda date_str: pd.to_datetime(date_str, errors='coerce')
+    lambda date_str: pd.to_datetime(
+        re.sub(r'\bOM\b', 'AM', re.sub(r'\b[A-Z]{1,3}$', '', date_str)) if isinstance(date_str, str) else date_str,
+        errors='coerce'
+    )
+
+
     )
 
     logger.info("Identifying Hillary aliases and PersonId...")
@@ -94,11 +102,42 @@ def preprocess_emails(
     )
     inbox_df = emails[emails['Id'].isin(received_email_ids)]
 
+    # 🛠 Reconstruct ExtractedTo from receivers
+    logger.info("Reconstructing ExtractedTo from receivers...")
+    email_to_recipients = (
+        receivers.groupby('EmailId')['Name']
+        .apply(list)
+        .to_dict()
+    )
+    emails['ExtractedTo'] = emails['Id'].map(email_to_recipients)
+
+    # Re-assign to inbox/sent with updated ExtractedTo
+    inbox_df = emails[emails['Id'].isin(received_email_ids)]
+    sent_df = emails[emails['IsHillarySender']]
+
     logger.info(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     logger.info("Saving processed data...")
     inbox_path = os.path.join(output_path_base, "Inbox.parquet")
     sent_path = os.path.join(output_path_base, "Sent.parquet")
+
+    columns_to_keep = [
+        "Id",
+        "ExtractedSubject",
+        "ExtractedBodyText",
+        "ExtractedFrom",
+        "ExtractedTo",
+        "ExtractedCc",           
+        "ExtractedDateSent"
+    ]
+
+    inbox_df = inbox_df[columns_to_keep]
+    sent_df = sent_df[columns_to_keep]
+
+    # Remove rows with missing Extracted Body Text
+    inbox_df = inbox_df[inbox_df['ExtractedBodyText'].notnull()]
+    sent_df = sent_df[sent_df['ExtractedBodyText'].notnull()]
+
 
     save(inbox_df, inbox_path)
     save(sent_df, sent_path)
@@ -125,6 +164,6 @@ if __name__ == "__main__":
         workers=workers
     )
 
-    print(f"\n📥 Inbox emails: {len(inbox_df)}")
-    print(f"📤 Sent emails:  {len(sent_df)}")
-    print(f"📊 Total related: {len(inbox_df) + len(sent_df)} / {len(load(emails_path))}")
+    print(f"\n📥 Nonempty Inbox emails: {len(inbox_df)}")
+    print(f"📤 Nonempty Sent emails:  {len(sent_df)}")
+
