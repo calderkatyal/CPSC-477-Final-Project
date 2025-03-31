@@ -1,10 +1,19 @@
-# CSPC 477 Final Project Proposal
+# CSPC 477 Final Project
 
 **Authors:** Calder Katyal, Jess Yatvitskiy  
 **Affiliation:** Yale University  
 **Emails:** calder.katyal@yale.edu, jess.yatvitskiy@yale.edu
 
 ---
+
+## Setup
+
+Download Docker at https://www.docker.com/products/docker-desktop and run the following to ensure it is set up correctly.
+
+```
+docker version
+docker run hello-world
+```
 
 ## Project Overview
 
