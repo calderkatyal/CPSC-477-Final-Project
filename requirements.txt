@@ -1,12 +1,9 @@
 numpy
 pandas
-torch
-transformers
-elasticsearch
-faiss-cpu
-spacy
-nltk
+tqdm
 scipy
+sqlalchemy
+psycopg2-binary
+jupyter
 matplotlib
 seaborn
-jupyter 
