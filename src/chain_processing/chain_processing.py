@@ -49,23 +49,46 @@ def split_email_chain(email_chain: str):
 def format_chain_as_conversation(metadata_list, email_bodies):
 
     #Get date and subject of latest email in chain, to serve as header for conversation
-    latest_email = metadata_list[0]
-    latest_email_header = f"{latest_email['subject']} ({latest_email['date']})\n"
+    latest_email_metadata = metadata_list[0]
+    latest_email_header = f"{latest_email_metadata['subject']} ({latest_email_metadata['date']})\n"
 
-    #Reverse the lists so emails are in order from earliest to latest
-    reversed_metadata = metadata_list[::-1]
+    #Reverse order of emails in chain, so that goes from earliest email to latest email now
+    reversed_metadata_list = metadata_list[::-1]
     reversed_bodies = email_bodies[::-1]
 
-    #Create string from rest of emails to be like conversation
-    #Looks like:
-    #Jill: I want to build a tree house.
-    #Jack: Yes, that sounds like a great idea.
-    formatted_string = "\n".join(
-        f"{metadata['from']}: {body}" for metadata, body in zip(reversed_metadata, reversed_bodies)
-    )
+    #List to use to format chain as conversation
+    formatted_parts = []
+    i = 0
 
-    #Combine the header and the conversation string
-    return latest_email_header + formatted_string
+    while i < len(reversed_metadata_list):
+        #Get metadata and body of current email
+        metadata = reversed_metadata_list[i]
+        body = reversed_bodies[i]
+
+        #Check if this email is forwarding another, if so, deal with this special case
+        if ("fwd:" in metadata["subject"].lower() or "fw:" in metadata["subject"].lower()) and ((i - 1) >= 0):
+            prev_email_metadata = reversed_metadata_list[i - 1]
+            #Need to make sure the next email in chain is truly a forwarded email and not a reply (make sure sender of that one differs from receiver of this one)
+            if prev_email_metadata['from'] != metadata['to']:
+               #Since the next email is being forwarded by this one, we may have "Original Message" in our body prior to this email; we should remove this
+               body = re.sub(r"\nOriginal Message\n", "", body, flags=re.IGNORECASE).strip()
+               quoted_body = reversed_bodies[i - 1]  #Body of the forwarded message
+
+            #If Jack says to Jill, "Look at this" and forwards an email from John which said "I think cats are better than dogs",
+            #we'll add to our script:
+            #Jack: {Jill, Look at this. John said: {I think cats are better than dogs.}}
+            quoted_body = f'{{{quoted_body}}}' #add brackets around quoted body
+            body = f"{metadata['to']}, {body} {prev_email_metadata['from']} said: {quoted_body}" #Format as a line in the script
+            reversed_bodies[i]=body #Edit the stored body in case this email is forwarded to the next in the chain
+
+        #If we are not forwarding, it's simpler. We put the body in brackets and add to the script,
+        #Sender: {body}
+        body = f'{{{body}}}'
+        formatted_parts.append(f"{metadata['from']}: {body}")
+        i += 1
+
+    #Combine the header (subject, date) and the conversation script
+    return latest_email_header + "\n".join(formatted_parts)
 
 #Helper to delete email that has matching sender, recipient, date, subject
 def delete_email(sender, recipient, date_sent, subject):
@@ -93,13 +116,14 @@ def delete_sub_chains(chain_metadata):
     for meta in chain_metadata[1:]:
         delete_email(meta['from'], meta['to'], meta['date'], meta['subject'])
 
-
-#Example
+#Examples
+print("Example 1")
+print("_________")
 email_chain = """From: Jack
 Sent: Wednesday, January 12, 2021 10:09 AM
 To: Jill
 Subject: Tree House
-This is the body of the email.
+That sounds like a great idea.
 
 From: Jill
 Sent: Tuesday, January 11, 2021 11:15 AM
@@ -118,7 +142,70 @@ for email, meta in zip(emails, metadata):
     print("-" * 80)
 
 #Print chain as conversation/script
-print('\n')
+print('Conversation: ')
+conversation = format_chain_as_conversation(metadata,emails)
+print(conversation)
+
+print("\nExample 2")
+print("_________")
+email_chain = """From: Jack
+Sent: Wednesday, January 12, 2021 10:09 AM
+To: Jill
+Subject: Fwd: Get a dog
+We should get a dog.
+
+From: John
+Sent: Tuesday, January 11, 2021 11:15 AM
+To: Jack
+Subject: Get a dog
+You should get a dog. Mine is great."""
+
+#Split chain into list of email bodies, list of corresponding metadata
+emails, metadata = split_email_chain(email_chain)
+print(metadata)
+#Print results to make sure splitting is done correctly
+print("Emails: ")
+for email, meta in zip(emails, metadata):
+    print(f"From: {meta['from']}, To: {meta['to']}, Sent: {meta['date']}, Subject: {meta['subject']}")
+    print("Email Body:", email)
+    print("-" * 80)
+
+#Print chain as conversation/script
+print('Conversation: ')
+conversation = format_chain_as_conversation(metadata,emails)
+print(conversation)
+
+print("\nExample 3")
+print("_________")
+email_chain = """From: Jill
+Sent: Wednesday, January 12, 2021 10:09 AM
+To: Jane
+Subject: Fwd: Fwd: Get a dog
+Look at this.
+
+From: Jack
+Sent: Wednesday, January 12, 2021 10:09 AM
+To: Jill
+Subject: Fwd: Get a dog
+We should get a dog.
+
+From: John
+Sent: Tuesday, January 11, 2021 11:15 AM
+To: Jack
+Subject: Get a dog
+You should get a dog. Mine is great."""
+
+#Split chain into list of email bodies, list of corresponding metadata
+emails, metadata = split_email_chain(email_chain)
+print(metadata)
+#Print results to make sure splitting is done correctly
+print("Emails: ")
+for email, meta in zip(emails, metadata):
+    print(f"From: {meta['from']}, To: {meta['to']}, Sent: {meta['date']}, Subject: {meta['subject']}")
+    print("Email Body:", email)
+    print("-" * 80)
+
+#Print chain as conversation/script
 print('Conversation: ')
 conversation = format_chain_as_conversation(metadata,emails)
 print(conversation)
