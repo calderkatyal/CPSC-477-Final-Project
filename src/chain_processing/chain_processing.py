@@ -1,5 +1,11 @@
 import re
 
+from sqlalchemy import create_engine, text
+
+# Database connection
+DB_URL = "postgresql://postgres:password@localhost:5432/emails_db"
+engine = create_engine(DB_URL)
+
 def split_email_chain(email_chain: str):
     #Emails in chain are separated by email metadata
     email_separator = r'(?=From: .*\nSent: .*\nTo: .*\nSubject: .*\n)'
@@ -60,6 +66,32 @@ def format_chain_as_conversation(metadata_list, email_bodies):
 
     #Combine the header and the conversation string
     return latest_email_header + formatted_string
+
+#Helper to delete email that has matching sender, recipient, date, subject
+def delete_email(sender, recipient, date_sent, subject):
+    with engine.begin() as conn:  
+        delete_query = text("""
+            DELETE FROM emails 
+            WHERE "ExtractedFrom" = :sender 
+            AND "ExtractedTo" = :recipient 
+            AND "ExtractedDateSent" = :date_sent 
+            AND "ExtractedSubject" = :subject;
+        """)
+       
+        result = conn.execute(delete_query, {
+            "sender": sender,
+            "recipient": recipient,
+            "date_sent": date_sent,
+            "subject": subject
+        })
+
+
+#For each chain of emails (A, B, C), the database also has an entry which is the chain (B,C) along with the entry for the original email, C. 
+#We should remove the (B,C) and C entries.
+#This function takes in the metadata for a chain and then removes all sub-chains from the database
+def delete_sub_chains(chain_metadata):
+    for meta in chain_metadata[1:]:
+        delete_email(meta['from'], meta['to'], meta['date'], meta['subject'])
 
 
 #Example
