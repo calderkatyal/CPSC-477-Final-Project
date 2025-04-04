@@ -162,7 +162,6 @@ You should get a dog. Mine is great."""
 
 #Split chain into list of email bodies, list of corresponding metadata
 emails, metadata = split_email_chain(email_chain)
-print(metadata)
 #Print results to make sure splitting is done correctly
 print("Emails: ")
 for email, meta in zip(emails, metadata):
@@ -197,7 +196,6 @@ You should get a dog. Mine is great."""
 
 #Split chain into list of email bodies, list of corresponding metadata
 emails, metadata = split_email_chain(email_chain)
-print(metadata)
 #Print results to make sure splitting is done correctly
 print("Emails: ")
 for email, meta in zip(emails, metadata):
