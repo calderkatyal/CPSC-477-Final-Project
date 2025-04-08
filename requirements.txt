@@ -10,3 +10,4 @@ seaborn
 torch
 transformers
 kaggle
+pyarrow
