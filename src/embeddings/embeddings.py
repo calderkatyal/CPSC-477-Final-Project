@@ -6,7 +6,7 @@ import torch
 from transformers import AutoTokenizer, AutoModel
 
 class EmailEmbedder:
-    def __init__(self, model_name: str = "Linq-AI-Research/Linq-Embed-Mistral"):
+    def __init__(self, model_name: str = "infly/inf-retriever-v1"):
         """Initialize email embedder.
         
         Args:
