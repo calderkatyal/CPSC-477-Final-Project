@@ -123,8 +123,11 @@ def preprocess_emails(
     logger.info(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     logger.info("Saving processed data...")
+    os.makedirs(output_path_base, exist_ok=True) 
+
     inbox_path = os.path.join(output_path_base, "Inbox.parquet")
     sent_path = os.path.join(output_path_base, "Sent.parquet")
+
 
     columns_to_keep = [
         "Id",
