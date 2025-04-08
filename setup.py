@@ -1,33 +1,33 @@
 import os
-import zipfile
 import kaggle
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-RAW_DIR = os.path.join(BASE_DIR, "raw")
-ZIP_PATH = os.path.join(BASE_DIR, "hillary-emails.zip")
+# Define dataset and target files
 DATASET = "kaggle/hillary-clinton-emails"
-
-NEEDED_FILES = {
+FILES = [
     "Aliases.csv",
     "EmailReceivers.csv",
     "Emails.csv",
     "Persons.csv"
-}
+]
 
-os.makedirs(RAW_DIR, exist_ok=True)
+# Define destination folder
+BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "data", "raw"))
+os.makedirs(BASE_DIR, exist_ok=True)
 
-print("📦 Downloading dataset...")
-kaggle.api.dataset_download_files(DATASET, path=BASE_DIR, unzip=False)
+# Download files
+print("Downloading files from Kaggle...")
+for file in FILES:
+    print(f"  ⬇️ {file}")
+    kaggle.api.dataset_download_file(DATASET, file_name=file, path=BASE_DIR, force=True)
 
-print("📂 Extracting files...")
-with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
-    for file in zip_ref.namelist():
-        filename = os.path.basename(file)
-        if filename in NEEDED_FILES:
-            print(f"  ✅ Extracting: {filename}")
-            zip_ref.extract(file, RAW_DIR)
+for file in FILES:
+    zip_path = os.path.join(BASE_DIR, f"{file}.zip")
+    csv_path = os.path.join(BASE_DIR, file)
+    if os.path.exists(zip_path):
+        import zipfile
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            zip_ref.extractall(BASE_DIR)
+        os.remove(zip_path)
+        print(f"Extracted: {file}")
 
-print("🧹 Cleaning up zip file...")
-os.remove(ZIP_PATH)
-
-print(f"Done! Files are in: {RAW_DIR}")
+print(f"\nAll files downloaded to: {BASE_DIR}")
