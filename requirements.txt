@@ -7,4 +7,6 @@ psycopg2-binary
 jupyter
 matplotlib
 seaborn
+torch
+transformers
 kaggle
