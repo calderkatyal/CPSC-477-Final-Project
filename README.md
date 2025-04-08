@@ -12,7 +12,7 @@ Download Docker at https://www.docker.com/products/docker-desktop and run the fo
 
 ```
 docker version
-docker run hello-world
+docker compose version
 ```
 
 Donwload requirements
@@ -21,7 +21,17 @@ Donwload requirements
 pip install -r requirements.txt
 ```
 
-## Temporary Pipeline
+## Temporary Pipeline (run from ROOT)
+
+Clone this directory
+
+Download dataset
+
+```
+python setup.py
+```
+
+Preprocess the data
 
 ```
 python src/preprocessing/preprocess.py
@@ -30,7 +40,7 @@ python src/preprocessing/preprocess.py
 Spin up the docker container
 
 ```
-docker-compose up -d 
+docker compose up -d 
 ```
 
 Store metadate in PostgreSQL
