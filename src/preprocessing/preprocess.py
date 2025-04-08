@@ -16,6 +16,8 @@ tqdm.pandas()
 # Compile regex patterns
 PUNCTUATION_REGEX = re.compile(r'[^\w\s]')
 SUBJECT_CLEAN_REGEX = re.compile(r'^(re|fwd):\s*', flags=re.IGNORECASE)
+HEADER_CLEAN_REGEX = re.compile(r'^.*?From')
+REPEATED_HEADER_CLEAN_REGEX = re.compile(r'UNCLASSIFIED.*?STATE.*\n')
 
 def extract_alias(raw_from: str) -> str:
     """Extract the alias or email from the 'From' field."""
@@ -32,6 +34,9 @@ def extract_alias(raw_from: str) -> str:
 
 def clean_text(texts: pd.Series, is_body: bool) -> pd.Series:
     texts = texts.fillna("").astype(str)
+    if is_body:
+        texts = texts.progress_apply(lambda x: re.sub(HEADER_CLEAN_REGEX,"",x))
+        texts = texts.progress_apply(lambda x: re.sub(REPEATED_HEADER_CLEAN_REGEX,"",x))
     texts = texts.progress_apply(lambda x: re.sub(PUNCTUATION_REGEX, " ", x.lower()))
     texts = texts.str.split().progress_apply(lambda words: ' '.join(words))
     if not is_body:
