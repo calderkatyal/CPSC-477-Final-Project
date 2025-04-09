@@ -85,7 +85,7 @@ def main():
     print("Initializing email embedder...")
     embedder = EmailEmbedder()
 
-    batch_size = 4  # ✅ defined ONCE here
+    batch_size = 3
 
     print("Generating embeddings...")
     embeddings = batch_embed(embedder, texts, batch_size)

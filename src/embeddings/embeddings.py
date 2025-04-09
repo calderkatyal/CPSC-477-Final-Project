@@ -7,8 +7,7 @@ import torch
 from transformers import AutoTokenizer, AutoModel, BitsAndBytesConfig
 import torch.nn.functional as F
 
-# ✅ Reduce memory fragmentation
-os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32,expandable_segments:True"
 
 class EmailEmbedder:
     def __init__(self, model_name: str = "infly/inf-retriever-v1-1.5b"):
