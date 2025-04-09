@@ -1,10 +1,14 @@
 """
 Email embedding module to generate embeddings for emails
 """
+import os
 from typing import List
 import torch
 from transformers import AutoTokenizer, AutoModel, BitsAndBytesConfig
 import torch.nn.functional as F
+
+# ✅ Reduce memory fragmentation
+os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 class EmailEmbedder:
     def __init__(self, model_name: str = "infly/inf-retriever-v1-1.5b"):
@@ -66,6 +70,13 @@ class EmailEmbedder:
             embeddings = self.mean_pool(model_output, encoded_input["attention_mask"])
             embeddings = F.normalize(embeddings, p=2, dim=1)
             all_embeddings.append(embeddings.cpu())
+
+            # ✅ Free up memory
+            del model_output, encoded_input, embeddings
+            torch.cuda.empty_cache()
+
+            # Optional: log memory
+            # print(f"[Batch {i}] Allocated: {torch.cuda.memory_allocated() / 1e9:.2f} GB | Reserved: {torch.cuda.memory_reserved() / 1e9:.2f} GB")
 
         return torch.cat(all_embeddings, dim=0)
 
