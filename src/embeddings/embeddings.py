@@ -3,11 +3,11 @@ Email embedding module to generate embeddings for emails
 """
 from typing import List
 import torch
-from transformers import AutoTokenizer, AutoModel, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F
 
 class EmailEmbedder:
-    def __init__(self, model_name: str = "infly/inf-retriever-v1"):
+    def __init__(self, model_name: str = "infly/inf-retriever-v1-1.5b"):
         """Initialize email embedder.
         
         Args:
@@ -15,20 +15,7 @@ class EmailEmbedder:
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-
-        quant_config = BitsAndBytesConfig(
-            load_in_4bit=True,
-            bnb_4bit_quant_type="nf4",
-            bnb_4bit_compute_dtype=torch.float16,
-            bnb_4bit_use_double_quant=True
-        )
-
-        self.model = AutoModel.from_pretrained(
-            model_name,
-            quantization_config=quant_config,
-            device_map={"": 0},  # load everything to GPU 0
-            trust_remote_code=True
-        )
+        self.model = AutoModel.from_pretrained(model_name, trust_remote_code=True).to(self.device)
 
     @staticmethod
     def mean_pool(model_output: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
@@ -45,7 +32,7 @@ class EmailEmbedder:
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size())
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
-    def embed_emails(self, emails: List[str], batch_size: int = 2) -> torch.Tensor:
+    def embed_emails(self, emails: List[str], batch_size: int = 4) -> torch.Tensor:
         """Generate embeddings for a list of emails in batches.
         
         Args:
@@ -67,7 +54,7 @@ class EmailEmbedder:
 
             embeddings = self.mean_pool(model_output, encoded_input["attention_mask"])
             embeddings = F.normalize(embeddings, p=2, dim=1)
-            all_embeddings.append(embeddings)
+            all_embeddings.append(embeddings.cpu())
 
         return torch.cat(all_embeddings, dim=0)
 
