@@ -20,13 +20,14 @@ class EmailEmbedder:
             load_in_8bit=True,
             llm_int8_threshold=6.0,
             llm_int8_skip_modules=None,
-            llm_int8_enable_fp32_cpu_offload=True
+            llm_int8_enable_fp32_cpu_offload=False,  # keep everything on GPU
+            bnb_4bit_compute_dtype=torch.float16
         )
 
         self.model = AutoModel.from_pretrained(
             model_name,
             quantization_config=quant_config,
-            device_map="auto",
+            device_map={"": 0},  # force entire model to GPU 0
             trust_remote_code=True
         )
 
