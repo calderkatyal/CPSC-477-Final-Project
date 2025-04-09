@@ -11,4 +11,3 @@ torch
 transformers
 kaggle
 pyarrow
-faiss-cpu
