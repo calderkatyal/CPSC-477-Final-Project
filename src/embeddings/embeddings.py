@@ -61,6 +61,8 @@ class EmailEmbedder:
             embeddings = F.normalize(embeddings, p=2, dim=1)
             all_embeddings.append(embeddings.cpu())
 
+            torch.cuda.empty_cache()
+
         return torch.cat(all_embeddings, dim=0)
 
     def embed_query(self, query: str) -> torch.Tensor:
