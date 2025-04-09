@@ -8,6 +8,8 @@
 
 ## Setup
 
+Setup Conda virtual environement with `python=3.11`
+
 Download Docker at https://www.docker.com/products/docker-desktop and run the following to ensure it is set up correctly.
 
 ```
