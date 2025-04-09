@@ -1,0 +1,107 @@
+"""
+Script to store email embeddings into FAISS index.
+"""
+
+import os
+import torch
+import pandas as pd
+from tqdm import tqdm
+import faiss
+from embeddings import EmailEmbedder
+
+tqdm.pandas()
+
+def load() -> pd.DataFrame:
+    """
+    Load raw and preprocessed email data.
+
+    Returns:
+         Combined DataFrame of inbox and sent emails with duplicates removed
+    """
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
+    inbox_path = os.path.join(PROCESSED_DIR, "Inbox.parquet")
+    sent_path = os.path.join(PROCESSED_DIR, "Sent.parquet")
+
+    inbox_df = pd.read_parquet(inbox_path)
+    sent_df = pd.read_parquet(sent_path)
+
+    inbox_df["folder"] = "inbox"
+    sent_df["folder"] = "sent"
+
+    emails_df = pd.concat([inbox_df, sent_df]).drop_duplicates("Id")
+    return emails_df
+
+def prepare_email_for_embedding(df: pd.DataFrame) -> list:
+    """
+    Combine subject and body of emails for embedding.
+    Args:
+        df: DataFrame containing email data
+    Returns:
+        List of email texts with subject and body combined
+    """
+    subject = df.get("ExtractedSubject").fillna("")
+    body = df.get("ExtractedBodyText").fillna("")
+    return (subject + "\n" + body).tolist()
+
+def batch_embed(embedder: EmailEmbedder, emails: list, batch_size: int = 64) -> torch.Tensor:
+    """
+    Batch embed email texts into embeddings.
+    Args:
+        embedder: EmailEmbedder instance
+        emails: List of email texts
+        batch_size: Size of batches for embedding
+    Returns:
+        Tensor of email embeddings
+    """
+    embeddings = []
+    for i in tqdm(range(0, len(emails), batch_size), desc="Embedding emails"):
+        batch = emails[i: i + batch_size]
+        batch_embeddings = embedder.embed_emails(batch)
+        embeddings.append(batch_embeddings.cpu())
+    return torch.cat(embeddings, dim=0)
+
+def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
+    """
+    Build FAISS index from embeddings.
+    Args:
+        embeddings: Tensor of email embeddings
+    Returns:
+        FAISS index
+    """
+    dimension = embeddings.shape[1]
+    index = faiss.IndexFlatIP(dimension)
+    index.add(embeddings.numpy().astype("float32"))
+    return index
+
+def main():
+    print("📥 Loading processed emails...")
+    df = load()
+    print(f"Loaded {len(df)} emails.")
+
+    print("Preparing emails for embedding...")
+    texts = prepare_email_for_embedding(df)
+
+    print("Initializing email embedder...")
+    embedder = EmailEmbedder()
+
+    print("Generating embeddings...")
+    embeddings = batch_embed(embedder, texts)
+    print(f"Generated {embeddings.shape[0]} embeddings.")
+
+    print("Building FAISS index...")
+    index = build_faiss_index(embeddings)
+    print(f"FAISS index built with {index.ntotal} vectors.")
+
+    print("💾 Saving FAISS index to disk...")
+    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
+    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
+    os.makedirs(PROCESSED_DIR, exist_ok=True)
+    index_path = os.path.join(PROCESSED_DIR, "embeddings.index")
+    faiss.write_index(index, index_path)
+    print(f"FAISS index saved at: {index_path}")
+
+    print("Done!")
+
+if __name__ == "__main__":
+    main()
