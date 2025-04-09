@@ -37,6 +37,7 @@ class EmailEmbedder:
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size())
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
+    @torch.inference_mode()
     def embed_emails(self, emails: List[str], batch_size) -> torch.Tensor:
         """Generate embeddings for a list of emails in batches.
         
@@ -54,14 +55,13 @@ class EmailEmbedder:
             encoded_input = self.tokenizer(batch, padding=True, truncation=True, return_tensors="pt")
             encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
 
-            with torch.no_grad():
-                model_output = self.model(**encoded_input)
+            model_output = self.model(**encoded_input)
 
             embeddings = self.mean_pool(model_output, encoded_input["attention_mask"])
             embeddings = F.normalize(embeddings, p=2, dim=1)
             all_embeddings.append(embeddings.cpu())
 
-            torch.cuda.empty_cache()
+    
 
         return torch.cat(all_embeddings, dim=0)
 
