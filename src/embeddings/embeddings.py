@@ -3,7 +3,7 @@ Email embedding module to generate embeddings for emails
 """
 from typing import List
 import torch
-from transformers import AutoTokenizer, AutoModel
+from transformers import AutoTokenizer, AutoModel, BitsAndBytesConfig
 import torch.nn.functional as F
 
 class EmailEmbedder:
@@ -15,12 +15,20 @@ class EmailEmbedder:
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+
+        quant_config = BitsAndBytesConfig(
+            load_in_8bit=True,
+            llm_int8_threshold=6.0,
+            llm_int8_skip_modules=None,
+            llm_int8_enable_fp32_cpu_offload=True
+        )
+
         self.model = AutoModel.from_pretrained(
             model_name,
-            torch_dtype=torch.float16,
-            low_cpu_mem_usage=True,
-            trust_remote_code=True,
-        ).to(self.device)
+            quantization_config=quant_config,
+            device_map="auto",
+            trust_remote_code=True
+        )
 
     @staticmethod
     def mean_pool(model_output: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
