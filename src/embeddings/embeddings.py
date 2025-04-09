@@ -13,8 +13,14 @@ class EmailEmbedder:
             model_name: Name of the model to use
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModel.from_pretrained(model_name).to(self.device)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        self.model = AutoModel.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16,
+            low_cpu_mem_usage=True,
+            trust_remote_code=True,
+            device_map="auto"
+        )
 
     @staticmethod
     def mean_pool(model_output: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
@@ -61,4 +67,4 @@ class EmailEmbedder:
             Query embedding tensor
         """
         # TODO: Implement query embedding
-        pass 
+        pass
