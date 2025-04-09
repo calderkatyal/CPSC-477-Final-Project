@@ -15,7 +15,12 @@ class EmailEmbedder:
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-        self.model = AutoModel.from_pretrained(model_name, trust_remote_code=True).to(self.device)
+        self.model = AutoModel.from_pretrained(
+            model_name,
+            torch_dtype=torch.float16,
+            trust_remote_code=True
+        ).to(self.device)
+
 
     @staticmethod
     def mean_pool(model_output: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
@@ -32,7 +37,7 @@ class EmailEmbedder:
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size())
         return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
 
-    def embed_emails(self, emails: List[str], batch_size: int = 4) -> torch.Tensor:
+    def embed_emails(self, emails: List[str], batch_size) -> torch.Tensor:
         """Generate embeddings for a list of emails in batches.
         
         Args:

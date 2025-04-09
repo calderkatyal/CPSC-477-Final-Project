@@ -44,7 +44,7 @@ def prepare_email_for_embedding(df: pd.DataFrame) -> list:
     body = df.get("ExtractedBodyText").fillna("")
     return (subject + "\n" + body).tolist()
 
-def batch_embed(embedder: EmailEmbedder, emails: list, batch_size: int = 64) -> torch.Tensor:
+def batch_embed(embedder: EmailEmbedder, emails: list, batch_size: int) -> torch.Tensor:
     """
     Batch embed email texts into embeddings.
     Args:
@@ -57,7 +57,7 @@ def batch_embed(embedder: EmailEmbedder, emails: list, batch_size: int = 64) -> 
     embeddings = []
     for i in tqdm(range(0, len(emails), batch_size), desc="Embedding emails"):
         batch = emails[i: i + batch_size]
-        batch_embeddings = embedder.embed_emails(batch)
+        batch_embeddings = embedder.embed_emails(batch, batch_size)
         embeddings.append(batch_embeddings.cpu())
     return torch.cat(embeddings, dim=0)
 
@@ -85,8 +85,10 @@ def main():
     print("Initializing email embedder...")
     embedder = EmailEmbedder()
 
+    batch_size = 4  # ✅ defined ONCE here
+
     print("Generating embeddings...")
-    embeddings = batch_embed(embedder, texts)
+    embeddings = batch_embed(embedder, texts, batch_size)
     print(f"Generated {embeddings.shape[0]} embeddings.")
 
     print("Building FAISS index...")
