@@ -79,6 +79,7 @@ class EmailEmbedder:
 
         return torch.cat(all_embeddings, dim=0)
 
+    @torch.inference_mode()
     def embed_query(self, query: str) -> torch.Tensor:
         """Generate embedding for a search query.
         
@@ -89,4 +90,10 @@ class EmailEmbedder:
             Query embedding tensor
         """
         # TODO: Implement query embedding
-        pass
+        encoded_input = self.tokenizer(query, return_tensors="pt")
+        encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
+        model_output = self.model(**encoded_input)
+        embeddings = self.mean_pool(model_output, encoded_input["attention_mask"])
+        embeddings = F.normalize(embeddings, p=2, dim=1)
+        return embeddings
+    
