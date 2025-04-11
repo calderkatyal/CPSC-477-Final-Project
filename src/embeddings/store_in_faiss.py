@@ -8,29 +8,9 @@ import pandas as pd
 from tqdm import tqdm
 import faiss
 from embeddings import EmailEmbedder
+from utils import load_email_metadata
 
 tqdm.pandas()
-
-def load() -> pd.DataFrame:
-    """
-    Load raw and preprocessed email data.
-
-    Returns:
-         Combined DataFrame of inbox and sent emails with duplicates removed
-    """
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
-    inbox_path = os.path.join(PROCESSED_DIR, "Inbox.parquet")
-    sent_path = os.path.join(PROCESSED_DIR, "Sent.parquet")
-
-    inbox_df = pd.read_parquet(inbox_path)
-    sent_df = pd.read_parquet(sent_path)
-
-    inbox_df["folder"] = "inbox"
-    sent_df["folder"] = "sent"
-
-    emails_df = pd.concat([inbox_df, sent_df]).drop_duplicates("Id")
-    return emails_df
 
 def prepare_email_for_embedding(df: pd.DataFrame) -> list:
     """
@@ -76,7 +56,7 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 
 def main():
     print("📥 Loading processed emails...")
-    df = load()
+    df = load_email_metadata()
     print(f"Loaded {len(df)} emails.")
 
     print("Preparing emails for embedding...")
