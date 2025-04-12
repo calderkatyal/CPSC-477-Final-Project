@@ -38,12 +38,12 @@ def main():
     print("Creating Elasticquery index for keyword search. After this, we'll be ready for any queries.")
     index_name = "emails"
     create_emails_index(es_client, emails_df, index_name)
-    print("Now, you can try some queries. Enter 'q' if you are done.")
+    print("Now, you can try some queries. Enter '*quit' if you are done.")
     #test_query = "Emails about Syria" 
     query = ""
     while True:
         query = input("Query: ")
-        if query == 'q':
+        if query == '*quit':
             break
         print("    Searching...")
         num_emails_wanted = 10
