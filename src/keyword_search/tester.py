@@ -41,8 +41,10 @@ def main():
     print("Now, you can try some queries. Enter 'q' if you are done.")
     #test_query = "Emails about Syria" 
     query = ""
-    while not(query == 'q'):
+    while True:
         query = input("Query: ")
+        if query == 'q':
+            break
         print("    Searching...")
         num_emails_wanted = 10
         top_emails_with_rankings = get_bm25_rankings(es_client, query, persons_to_aliases_dict, num_emails_wanted)

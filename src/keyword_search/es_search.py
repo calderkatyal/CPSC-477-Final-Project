@@ -14,7 +14,6 @@ def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, index
     if es_client.indices.exists(index="emails"):
         es_client.indices.delete(index="emails")
 
-    #if not es_client.indices.exists(index=index_name):
     es_client.indices.create(
         index=index_name,
         body={
@@ -55,47 +54,6 @@ def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, index
     ]
 
     bulk(es_client, actions)
-
-"""
-#make faster
-def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, index_name: str):
-
-    if (not es_client.indices.exists(index = index_name)):
-        es_client.indices.create(
-            index = index_name,
-            body = {
-                "settings": {
-                    "index": {
-                        "number_of_shards": 1,
-                        "number_of_replicas": 0
-                    }
-                },
-                "mappings": {
-                    "properties": {
-                        "subject": {"type": "text"},
-                        "body": {"type": "text"},
-                        "sender": {"type": "keyword"},
-                        "recipients": {"type": "keyword"},
-                        "cc": {"type": "keyword"},
-                        "date_sent": {"type": "date"},
-                        "folder": {"type": "keyword"}
-                    }
-                }
-            }
-        )
-
-    for _, row in tqdm(emails_df.iterrows(), total = len(emails_df)):
-        email_info = {
-            "subject": row["subject"],
-            "body": row["body"],
-            "sender": row["sender"],
-            "recipients": row["recipients"],
-            "cc": row["cc"],
-            "date_sent": row["date_sent"],
-            "folder": row["folder"]
-        }
-        es_client.index(index = index_name, body = email_info)
-"""
 
 def get_rankings_for_query(es_client: Elasticsearch, es_query: Dict[str, Any], num_results_wanted):
     index_name = "emails"
