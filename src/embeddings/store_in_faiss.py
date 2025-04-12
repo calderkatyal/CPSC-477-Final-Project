@@ -60,36 +60,41 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 
 def main(args):
     print("📥 Loading processed emails...")
-    df = load_processed_emails()
-    print(f"Loaded {len(df)} emails.")
+    from src.config import INBOX_PATH, SENT_PATH  # Import only when needed
+    from src.utils import load  # Use load for individual paths
+    inbox_df = load(INBOX_PATH)
+    sent_df = load(SENT_PATH)
 
-    print("Preparing emails for embedding...")
-    texts = prepare_email_for_embedding(df)
+    print(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     print("Initializing email embedder...")
-    
-    if args.big_model:
-        embedder = EmailEmbedder(big_model=True)
-    else:
-        embedder = EmailEmbedder()
-
+    embedder = EmailEmbedder(big_model=args.big_model)
     batch_size = 3
 
-    print("Generating embeddings...")
-    embeddings = batch_embed(embedder, texts, batch_size)
-    print(f"Generated {embeddings.shape[0]} embeddings.")
+    for label, df in [("inbox", inbox_df), ("sent", sent_df)]:
+        if df.empty:
+            print(f"⚠️ No emails in {label}, skipping.")
+            continue
 
-    print("Building FAISS index...")
-    index = build_faiss_index(embeddings)
-    print(f"FAISS index built with {index.ntotal} vectors.")
+        print(f"\n📤 Processing {label.capitalize()} emails...")
+        texts = prepare_email_for_embedding(df)
 
-    print("💾 Saving FAISS index to disk...")
-    os.makedirs(PROCESSED_DIR, exist_ok=True)
-    index_path = os.path.join(EMBEDDINGS_DIR, "embeddings.index")
-    faiss.write_index(index, index_path)
-    print(f"FAISS index saved at: {index_path}")
+        print("Generating embeddings...")
+        embeddings = batch_embed(embedder, texts, batch_size)
+        print(f"Generated {embeddings.shape[0]} embeddings for {label}.")
 
-    print("Done!")
+        print("Building FAISS index...")
+        index = build_faiss_index(embeddings)
+        print(f"FAISS index built with {index.ntotal} vectors.")
+
+        print("💾 Saving FAISS index to disk...")
+        os.makedirs(PROCESSED_DIR, exist_ok=True)
+        index_path = os.path.join(EMBEDDINGS_DIR, f"{label}_embeddings.index")
+        faiss.write_index(index, index_path)
+        print(f"FAISS index saved at: {index_path}")
+
+    print("\nDone!")
+
 
 if __name__ == "__main__":
     # Add optional argument for big_model
