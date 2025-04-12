@@ -2,13 +2,15 @@
 Script to store email embeddings into FAISS index.
 """
 
+# TODO: Modify to store Inbox and Sent email embeddings separately.
+
 import os
 import torch
 import pandas as pd
 from tqdm import tqdm
 import faiss
 from src.embeddings import EmailEmbedder
-from src.utils import load_email_metadata
+from src.utils import load_processed_emails
 from src.config import PROCESSED_DIR, EMBEDDINGS_DIR
 
 tqdm.pandas()
@@ -57,7 +59,7 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 
 def main():
     print("📥 Loading processed emails...")
-    df = load_email_metadata()
+    df = load_processed_emails()
     print(f"Loaded {len(df)} emails.")
 
     print("Preparing emails for embedding...")

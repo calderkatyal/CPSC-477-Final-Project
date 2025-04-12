@@ -70,7 +70,7 @@ class EmailEmbedder:
             embeddings = F.normalize(embeddings, p=2, dim=1)
             all_embeddings.append(embeddings.cpu())
 
-            # ✅ Free up memory
+            # Free up memory
             del model_output, encoded_input, embeddings
             torch.cuda.empty_cache()
 
@@ -89,7 +89,6 @@ class EmailEmbedder:
         Returns:
             Query embedding tensor
         """
-        # TODO: Implement query embedding
         encoded_input = self.tokenizer(query, return_tensors="pt")
         encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
         model_output = self.model(**encoded_input)
