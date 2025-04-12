@@ -52,9 +52,11 @@ def semantic_search(query: str, folder: Optional[str] = None, top_k: Optional[in
 
 if __name__ == "__main__":
     query = input("Enter your search query: ")
-    results = semantic_search(query, top_k=5)
+    results = semantic_search(query, top_k=3)
 
     for r in results:
         subject = r.get("ExtractedSubject") or "No Subject"
-        print(f"[{r['score']:.4f}] {subject[:80]}")
-
+        body = r.get("ExtractedBody") or "[No Body Content]"
+        print(f"\n🔹 Score: {r['score']:.4f}")
+        print(f"📌 Subject: {subject[:80]}")
+        print(f"✉️ Body Preview: {body[:300]}")
