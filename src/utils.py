@@ -24,15 +24,24 @@ def load_processed_emails() -> pd.DataFrame:
     return combined_df
 
 
-
-def load_faiss_index() -> faiss.IndexFlatIP:
+def load_faiss_index(folder: str = "inbox") -> faiss.IndexFlatIP:
     """
-    Loads the FAISS index.
+    Load FAISS index based on the specified folder ('inbox' or 'sent').
+
+    Args:
+        folder: Which folder's index to load ('inbox' or 'sent')
 
     Returns:
         FAISS index
     """
-    return faiss.read_index(FAISS_INDEX_PATH)
+    index_filename = f"{folder}_embeddings.index"
+    index_path = os.path.join(FAISS_INDEX_PATH, index_filename)
+
+    if not os.path.exists(index_path):
+        raise FileNotFoundError(f"FAISS index not found at: {index_path}")
+
+    return faiss.read_index(index_path)
+
 
 def faiss_to_device(index: faiss.Index) -> faiss.Index:
     """
