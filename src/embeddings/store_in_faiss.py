@@ -61,8 +61,9 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 def main(args):
     print("📥 Loading processed emails...")
     
-    inbox_df = load_processed_emails(INBOX_PATH)
-    sent_df = load_processed_emails(SENT_PATH)
+    df = load_processed_emails()
+    inbox_df = df[df["folder"] == "inbox"]
+    sent_df = df[df["folder"] == "sent"]
 
     print(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
