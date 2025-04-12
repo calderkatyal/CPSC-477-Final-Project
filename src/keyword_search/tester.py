@@ -6,59 +6,25 @@ import os
 import pandas as pd
 from typing import List, Dict, Any
 from elasticsearch import Elasticsearch
-from build_es_query import build_es_query
-from es_search import perform_search
+from build_es_query import get_persons_to_aliases_dict, build_es_query
+from es_search import create_emails_index, clean_date_formatting_for_matching, perform_search
+from sqlalchemy import create_engine
 
-def load_emails() -> pd.DataFrame:
-    """
-    Load raw and preprocessed email data.
-
-    Returns:
-         Combined DataFrame of inbox and sent emails with duplicates removed
-    """
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
-    inbox_path = os.path.join(PROCESSED_DIR, "Inbox.parquet")
-    sent_path = os.path.join(PROCESSED_DIR, "Sent.parquet")
-
-    inbox_df = pd.read_parquet(inbox_path)
-    sent_df = pd.read_parquet(sent_path)
-
-    inbox_df["folder"] = "inbox"
-    sent_df["folder"] = "sent"
-
-    emails_df = pd.concat([inbox_df, sent_df]).drop_duplicates("Id")
+def load_emails_from_sql() -> pd.DataFrame:
+    DB_URL = "postgresql://postgres:password@localhost:5432/emails_db"
+    engine = create_engine(DB_URL)
+    query = "SELECT * FROM emails"
+    emails_df = pd.read_sql(query, engine)
     return emails_df
 
-def get_bm25_rankings(es_client: Elasticsearch, query: str, emails_df: pd.DataFrame, persons_to_aliases, num_emails_wanted: int = 10) -> List[Dict[str, Any]]:
-    es_query = build_es_query(query,persons_to_aliases)
-    top_emails_with_rankings = perform_search(es_client, es_query, emails_df, k)
+def get_bm25_rankings(es_client: Elasticsearch, query: str, persons_to_aliases_dict: Dict[str,List[str]], num_emails_wanted: int = 10) -> List[Dict[str, Any]]:
+    es_query = build_es_query(query, persons_to_aliases_dict)
+    top_emails_with_rankings = perform_search(es_client, es_query, num_emails_wanted)
     return top_emails_with_rankings
 
-def get_persons_to_aliases_dict():
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    RAW_DIR = os.path.join(BASE_DIR, "raw")
-    aliases_path = os.path.join(RAW_DIR, "Aliases.csv")
-    persons_path = os.path.join(RAW_DIR, "Persons.csv")
-
-    if not os.path.exists(aliases_path):
-        raise FileNotFoundError(f"File not found: {aliases_path}")
-    if not os.path.exists(persons_path):
-        raise FileNotFoundError(f"File not found: {persons_path}")
-    aliases = pd.read_csv(aliases_path)
-    persons = pd.read_csv(persons_path)
-
-    aliases['Alias'] = aliases['Alias'].str.lower()
-    persons['Person'] = persons['Person'].str.lower()
-
-    persons_map = persons.merge(aliases, right_on='PersonId', left_on='Id', suffixes=('', '_alias'))
-    persons_to_aliases = persons_map.groupby('Person')['Alias_alias'].apply(list).to_dict()
-    return persons_to_aliases
-
 def main():
-    print("📥 Loading processed emails...")
-    emails_df = load_emails()
-    print(f"Loaded {len(emails_df)} emails.")
+    emails_df = load_emails_from_sql()
+    emails_df = clean_date_formatting_for_matching(emails_df)
 
     persons_to_aliases_dict = get_persons_to_aliases_dict()
 
@@ -69,10 +35,21 @@ def main():
     else:
         print("Failed to connect to Elasticsearch.")
 
-    test_query = "" #modify to allow command-line input
-    num_emails_wanted = 10
-    top_emails_with_rankings = get_bm25_rankings(es_client, test_query, emails_df, persons_to_aliases_dict, num_emails_wanted)
-    print(top_emails_with_rankings)
+    print("Creating Elasticquery index for keyword search. After this, we'll be ready for any queries.")
+    index_name = "emails"
+    create_emails_index(es_client, emails_df, index_name)
+    print("Now, you can try some queries. Enter 'q' if you are done.")
+    #test_query = "Emails about Syria" 
+    query = ""
+    while not(query == 'q'):
+        query = input("Query: ")
+        print("    Searching...")
+        num_emails_wanted = 10
+        top_emails_with_rankings = get_bm25_rankings(es_client, query, persons_to_aliases_dict, num_emails_wanted)
+        print("    Results: ")
+        for result in top_emails_with_rankings:
+            print(result['_source'])
+        #print(top_emails_with_rankings)
 
 if __name__ == "__main__":
     main()
