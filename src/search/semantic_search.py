@@ -17,15 +17,18 @@ def semantic_search(query: str, folder: Optional[str] = None, top_k: Optional[in
     print("🔄 Loading emails and FAISS index...")
     df = load_processed_emails()
 
-    index = faiss_to_device(load_faiss_index())
+    folder = folder.lower() if folder else "inbox"
 
-    if folder:
-        folder = folder.lower()
-        if folder not in {"inbox", "sent"}:
-            raise ValueError("folder must be 'inbox', 'sent', or None")
-        df = df[df["folder"] == folder].reset_index(drop=True)
-    
-    assert index.ntotal == len(df), f"FAISS index and DataFrame lengths do not match. Length of index: {index.ntotal}, length of DataFrame: {len(df)}"
+    if folder not in {"inbox", "sent"}:
+        raise ValueError("folder must be 'inbox', 'sent', or None")
+
+    df = df[df["folder"] == folder].reset_index(drop=True)
+    index = load_faiss_index(folder)
+
+    assert index.ntotal == len(df), (
+        f"FAISS index and DataFrame lengths do not match. "
+        f"Length of index: {index.ntotal}, length of DataFrame: {len(df)}"
+    )
 
     print("🧠 Embedding query...")
     embedder = EmailEmbedder()
