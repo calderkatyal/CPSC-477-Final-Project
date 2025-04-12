@@ -5,6 +5,7 @@ Script to store email embeddings into FAISS index.
 # TODO: Modify to store Inbox and Sent email embeddings separately.
 
 import os
+import argparse
 import torch
 import pandas as pd
 from tqdm import tqdm
@@ -57,7 +58,7 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
     index.add(embeddings.numpy().astype("float32"))
     return index
 
-def main():
+def main(args):
     print("📥 Loading processed emails...")
     df = load_processed_emails()
     print(f"Loaded {len(df)} emails.")
@@ -66,7 +67,11 @@ def main():
     texts = prepare_email_for_embedding(df)
 
     print("Initializing email embedder...")
-    embedder = EmailEmbedder()
+    
+    if args.big_model:
+        embedder = EmailEmbedder(big_model=True)
+    else:
+        embedder = EmailEmbedder()
 
     batch_size = 3
 
@@ -87,4 +92,8 @@ def main():
     print("Done!")
 
 if __name__ == "__main__":
-    main()
+    # Add optional argument for big_model
+    parser = argparse.ArgumentParser(description="Store email embeddings in FAISS index.")
+    parser.add_argument("--big_model", action="store_true", help="Use full precision model.")
+    args = parser.parse_args()
+    main(args)
