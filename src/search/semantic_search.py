@@ -57,7 +57,7 @@ if __name__ == "__main__":
     for r in results:
         id = r.get("Id")
         subject = r.get("ExtractedSubject") or "No Subject"
-        body = r.get("ExtractedBody") or "[No Body Content]"
+        body = r.get("ExtractedBodyText") or "[No Body Content]"
         print(f"\n🔹 Score: {r['score']:.4f}")
         print(f"📧 Email ID: {id}")
         print(f"📌 Subject: {subject[:80]}")
