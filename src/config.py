@@ -9,6 +9,6 @@ EMBEDDINGS_DIR = os.path.join(PROJECT_ROOT, "embeddings") # TODO: Change this at
 
 INBOX_PATH = os.path.join(PROCESSED_DIR, "Inbox.parquet")
 SENT_PATH = os.path.join(PROCESSED_DIR, "Sent.parquet")
-FAISS_INDEX_PATH = os.path.join(EMBEDDINGS_DIR, "embeddings.index")
+FAISS_INDEX_PATH = os.path.join(PROJECT_ROOT, "embeddings")
 
 DB_URL = "postgresql://postgres:password@localhost:5432/emails_db"
