@@ -31,7 +31,7 @@ def semantic_search(query: str, folder: Optional[str] = None, top_k: Optional[in
     )
 
     print("🧠 Embedding query...")
-    embedder = EmailEmbedder()
+    embedder = EmailEmbedder(big_model=True)
     query_embedding = embedder.embed_query(query)  # shape: [1, dim]
     query_np = query_embedding.cpu().numpy().astype("float32")
 
