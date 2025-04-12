@@ -10,9 +10,9 @@ import torch
 import pandas as pd
 from tqdm import tqdm
 import faiss
-from src.embeddings import EmailEmbedder
+from src.embeddings.embeddings import EmailEmbedder
 from src.utils import load_processed_emails
-from src.config import PROCESSED_DIR, EMBEDDINGS_DIR
+from src.config import PROCESSED_DIR, EMBEDDINGS_DIR, INBOX_PATH, SENT_PATH
 
 tqdm.pandas()
 
@@ -60,16 +60,15 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 
 def main(args):
     print("📥 Loading processed emails...")
-    from src.config import INBOX_PATH, SENT_PATH  # Import only when needed
-    from src.utils import load  # Use load for individual paths
-    inbox_df = load(INBOX_PATH)
-    sent_df = load(SENT_PATH)
+    
+    inbox_df = load_processed_emails(INBOX_PATH)
+    sent_df = load_processed_emails(SENT_PATH)
 
     print(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     print("Initializing email embedder...")
     embedder = EmailEmbedder(big_model=args.big_model)
-    batch_size = 3
+    batch_size = args.batch_size
 
     for label, df in [("inbox", inbox_df), ("sent", sent_df)]:
         if df.empty:
@@ -100,5 +99,6 @@ if __name__ == "__main__":
     # Add optional argument for big_model
     parser = argparse.ArgumentParser(description="Store email embeddings in FAISS index.")
     parser.add_argument("--big_model", action="store_true", help="Use full precision model.")
+    parser.add_argument("--batch_size", type=int, default=3, help="Batch size for embedding emails.")
     args = parser.parse_args()
     main(args)
