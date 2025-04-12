@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-
+import faiss
+from config import INBOX_PATH, SENT_PATH
 
 def load_email_metadata() -> pd.DataFrame:
     """
@@ -9,16 +10,21 @@ def load_email_metadata() -> pd.DataFrame:
     Returns:
          Combined DataFrame of inbox and sent emails with duplicates removed
     """
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
-    inbox_path = os.path.join(PROCESSED_DIR, "Inbox.parquet")
-    sent_path = os.path.join(PROCESSED_DIR, "Sent.parquet")
-
-    inbox_df = pd.read_parquet(inbox_path)
-    sent_df = pd.read_parquet(sent_path)
+    inbox_df = pd.read_parquet(INBOX_PATH)
+    sent_df = pd.read_parquet(SENT_PATH)
 
     inbox_df["folder"] = "inbox"
     sent_df["folder"] = "sent"
 
-    emails_df = pd.concat([inbox_df, sent_df]).drop_duplicates("Id")
+    emails_df = pd.concat([inbox_df, sent_df])
     return emails_df
+
+def load_faiss_index() -> faiss.IndexFlatIP:
+    """
+    Loads the FAISS index.
+
+    Returns:
+        FAISS index
+    """
+    index_path = os.path.join(EMBEDDINGS_DIR, "embeddings.index")
+

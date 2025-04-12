@@ -2,17 +2,12 @@ import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
 from tqdm import tqdm
-import os
+from src.config import DB_URL, INBOX_PATH, SENT_PATH
 
 tqdm.pandas()
 
-# Load processed data
-DATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "processed"))
-inbox_path = os.path.join(DATA_DIR, "Inbox.parquet")
-sent_path = os.path.join(DATA_DIR, "Sent.parquet")
-
-inbox = pd.read_parquet(inbox_path)
-sent = pd.read_parquet(sent_path)
+inbox = pd.read_parquet(INBOX_PATH)
+sent = pd.read_parquet(SENT_PATH)
 
 # Add folder label
 inbox["folder"] = "inbox"
@@ -42,7 +37,6 @@ emails_to_sql['cc'] = emails_to_sql['cc'].progress_apply(
 )
 
 # Connect to PostgreSQL
-DB_URL = "postgresql://postgres:password@localhost:5432/emails_db"
 engine = create_engine(DB_URL)
 
 # Save to PostgreSQL

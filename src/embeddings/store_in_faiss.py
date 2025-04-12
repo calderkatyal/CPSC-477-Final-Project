@@ -7,8 +7,9 @@ import torch
 import pandas as pd
 from tqdm import tqdm
 import faiss
-from embeddings import EmailEmbedder
-from utils import load_email_metadata
+from src.embeddings import EmailEmbedder
+from src.utils import load_email_metadata
+from src.config import PROCESSED_DIR, EMBEDDINGS_DIR
 
 tqdm.pandas()
 
@@ -76,10 +77,8 @@ def main():
     print(f"FAISS index built with {index.ntotal} vectors.")
 
     print("💾 Saving FAISS index to disk...")
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
     os.makedirs(PROCESSED_DIR, exist_ok=True)
-    index_path = os.path.join(PROCESSED_DIR, "embeddings.index")
+    index_path = os.path.join(EMBEDDINGS_DIR, "embeddings.index")
     faiss.write_index(index, index_path)
     print(f"FAISS index saved at: {index_path}")
 

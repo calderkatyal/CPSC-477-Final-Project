@@ -1,12 +1,14 @@
 import pandas as pd
+import sys
 import re
 import os
 from typing import Tuple
-from dataloader import load, save
+from src.preprocessing.dataloader import load, save
 from datetime import datetime
 from tqdm import tqdm
 import logging
 from multiprocessing import cpu_count
+from src.config import RAW_DIR, PROCESSED_DIR, INBOX_PATH, SENT_PATH
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -48,8 +50,6 @@ def preprocess_emails(
     receivers_path: str,
     aliases_path: str,
     persons_path: str,
-    output_path_base: str,
-    workers: int = None
 ) -> Tuple[pd.DataFrame, pd.DataFrame]:
     
     logger.info("Loading Hillary Clinton dataset...")
@@ -85,7 +85,6 @@ def preprocess_emails(
         re.sub(r'\bOM\b', 'AM', re.sub(r'\b[A-Z]{1,3}$', '', date_str)) if isinstance(date_str, str) else date_str,
         errors='coerce'
     )
-
 
     )
 
@@ -123,11 +122,7 @@ def preprocess_emails(
     logger.info(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     logger.info("Saving processed data...")
-    os.makedirs(output_path_base, exist_ok=True) 
-
-    inbox_path = os.path.join(output_path_base, "Inbox.parquet")
-    sent_path = os.path.join(output_path_base, "Sent.parquet")
-
+    os.makedirs(PROCESSED_DIR, exist_ok=True) 
 
     columns_to_keep = [
         "Id",
@@ -146,30 +141,22 @@ def preprocess_emails(
     inbox_df = inbox_df[inbox_df['ExtractedBodyText'].notnull()]
     sent_df = sent_df[sent_df['ExtractedBodyText'].notnull()]
 
-
-    save(inbox_df, inbox_path)
-    save(sent_df, sent_path)
+    save(inbox_df, INBOX_PATH)
+    save(sent_df, SENT_PATH)
 
     return inbox_df, sent_df
 
 if __name__ == "__main__":
-    BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data"))
-    RAW_DIR = os.path.join(BASE_DIR, "raw")
-    PROCESSED_PATH = os.path.join(BASE_DIR, "processed")
-
     emails_path = os.path.join(RAW_DIR, "Emails.csv")
     receivers_path = os.path.join(RAW_DIR, "EmailReceivers.csv")
     aliases_path = os.path.join(RAW_DIR, "Aliases.csv")
     persons_path = os.path.join(RAW_DIR, "Persons.csv")
 
-    workers = cpu_count() * 2
     inbox_df, sent_df = preprocess_emails(
         emails_path,
         receivers_path,
         aliases_path,
         persons_path,
-        PROCESSED_PATH,
-        workers=workers
     )
 
     print(f"\n📥 Nonempty Inbox emails: {len(inbox_df)}")
