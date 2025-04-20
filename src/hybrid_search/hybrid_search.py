@@ -2,7 +2,7 @@
 from typing import List, Dict
 from elasticsearch import Elasticsearch
 from src.semantic_search.semantic_search import semantic_search
-from src.hybrid_search.combine_rankings import combine_rankings, get_top_emails_by_id
+from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_by_id
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 
