@@ -58,6 +58,16 @@ def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, folde
 
 def get_keyword_rankings(es_client: Elasticsearch, query: str, folder_name, num_emails_wanted, persons_to_aliases_dict: Dict[str,List[str]]) -> List[Dict[str, Any]]:
     es_query = build_es_query(query, persons_to_aliases_dict)
-    results = es_client.search(index = folder_name, body = es_query, size = num_emails_wanted)
-    top_emails_with_rankings = results["hits"]["hits"]
-    return top_emails_with_rankings
+
+    num_emails_wanted = max(num_emails_wanted, 500)
+    es_results = es_client.search(index = folder_name, body = es_query, size = num_emails_wanted)
+
+    emails_with_rankings = es_results["hits"]["hits"]
+    results = []
+    for email in emails_with_rankings: 
+        email_id = int(email["_id"])
+        score = email["_score"]
+        email_info = (email_id, score)
+        results.append(email_info)
+    results = sorted(results, key=lambda x: x[0]) 
+    return results

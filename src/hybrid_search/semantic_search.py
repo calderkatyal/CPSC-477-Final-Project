@@ -8,18 +8,26 @@ def semantic_search(query, index, df, top_k) -> List[Dict]:
     query_np = query_embedding.cpu().numpy().astype("float32")
 
     print("🔍 Running similarity search...")
-    k = index.ntotal if top_k is None else min(top_k, index.ntotal)
+    #removed top_k stuff because wouldn't really change speed, uses priority queue and needs to score everything anyway
+    #k = index.ntotal if top_k is None else min(top_k, index.ntotal) 
+    k = index.ntotal
     scores, indices = index.search(query_np, k)
 
     scores = scores[0]
     indices = indices[0]
 
     results = []
+    #can make more efficient but not that important
+    #also could do this outside and avoid passing df around as a parameter
     for idx, score in zip(indices, scores):
-        email = df.iloc[idx].to_dict()
-        email["score"] = float(score)
-        results.append(email)
+        email_id = int(df.iloc[idx]["Id"])
+        email_info = (email_id, score)
+        #email = df.iloc[idx].to_dict()
+        #email["score"] = float(score)
+        results.append(email_info)
 
+    #sort by Id for efficient combination of rankings with keyword rankings
+    results = sorted(results, key=lambda x: x[0]) 
     return results
 
 """
