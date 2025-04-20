@@ -11,31 +11,20 @@ import torch.nn.functional as F
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32,expandable_segments:True"
 
 class EmailEmbedder:
-    def __init__(self, big_model: bool = False):
+    def __init__(self):
         """Initialize email embedder.
         
-        Args:
-            big_model : Whether to use full precision 'infly/inf-retriever-v1' model
         """
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        if big_model:
-            model_name = "infly/inf-retriever-v1"
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
-            self.model = AutoModel.from_pretrained(
-                model_name,
-                device_map={"": self.device},
-                trust_remote_code=True
-            )
-        else:
-            model_name = "infly/inf-retriever-v1-1.5b"
-            self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
+        model_name = "infly/inf-retriever-v1-1.5b"
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name, trust_remote_code=True)
 
-            self.model = AutoModel.from_pretrained(
-                model_name,
-                device_map={"": self.device},
-                trust_remote_code=True
-            )
+        self.model = AutoModel.from_pretrained(
+            model_name,
+            device_map={"": self.device},
+            trust_remote_code=True
+        )
 
     @staticmethod
     def last_token_pool(last_hidden_states: Tensor,

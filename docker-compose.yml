@@ -1,26 +1,14 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:17
-    container_name: email_postgres
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: emails_db
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
     container_name: email_elasticsearch
     environment:
       - discovery.type=single-node
-      - xpack.security.enabled=false   # Disable auth for local use
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g     # Set memory limits
+      - xpack.security.enabled=false   
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g     
     ports:
       - "9200:9200"
       - "9300:9300"

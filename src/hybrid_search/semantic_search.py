@@ -1,21 +1,21 @@
 from src.embeddings.embeddings import EmailEmbedder
 from typing import List, Tuple
-import torch
+
+embedder = EmailEmbedder()
 
 def semantic_search(query: str, index, df) -> List[Tuple[int, float]]:
     """
-    Perform semantic search on emails using a query string.
+    Perform semantic search using FAISS over embedded emails.
 
     Args:
-        query: The search query.
-        index: Pre-loaded FAISS index for the folder.
-        df: Corresponding DataFrame (must contain 'Id' column).
+        query: Natural language query.
+        index: FAISS index of embeddings.
+        df: DataFrame of emails with assigned IDs.
 
     Returns:
-        A list of (email_id, similarity score) tuples, sorted by ID.
+        List of (email_id, similarity_score) sorted by ID.
     """
     print("🧠 Embedding query...")
-    embedder = EmailEmbedder(big_model=True)
     query_embedding = embedder.embed_query(query)
     query_np = query_embedding.cpu().numpy().astype("float32")
 

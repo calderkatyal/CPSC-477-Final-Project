@@ -1,318 +1,149 @@
-Results in your inbox folder for the following query: syria
+Results in your inbox folder for the following query: test
 
 Result 1
-______________________
-Email ID: 1
-From: 
+______________________\nEmail ID: 355
+From: Abedin, Huma <AbedinH@state.gov>
 CC'd: None
-Date: None
-Subject: No Subject
-Body Preview: B6
-Thursday, March 3, 2011 9:45 PM
-H: Latest How Syria is aiding Qaddafi and more... Sid
-hrc memo syria aiding libya 030311.docx; hrc memo syria aiding libya 030311.docx
-March 3, 2011
-For: Hillary
+Date: 2009-04-24T13:27:00
+Subject: Test
+Body Preview: 34
 
 Result 2
-______________________
-Email ID: 3502
-From: Sullivan, Jacob J <SullivanJJ@state.gov>
-CC'd: Hof, Frederic C; Hale, David M; Reed, Julia G
-Date: 2010-08-07T13:44:00
-Subject: Fw: Syria pts for
-Body Preview: RELEASE IN PART B5,B6
+______________________\nEmail ID: 3730
+From: Lauren Jiloty
+CC'd: None
+Date: 2010-08-23T17:58:00
+Subject: RE: Test
+Body Preview: Received. However, I did not get the one you sent to my state e-mail earlier. There must be some problem with the
+State e-mail filters. I will be monitoring this e-mail closely.
+>
 
 Result 3
-______________________
-Email ID: 3503
-From: Sullivan, Jacob J <SullivanJJ@state.gov>
-CC'd: Hof, Frederic C; Hale, David M; Reed, Julia G
-Date: 2010-08-07T13:52:00
-Subject: RE: Syria pts for
-Body Preview: Will do
+______________________\nEmail ID: 2460
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2010-02-27T18:34:00
+Subject: Re: E-mail test
+Body Preview: Nothing.
 
 Result 4
-______________________
-Email ID: 3469
-From: 
+______________________\nEmail ID: 2473
+From: Butzgy, Christopher H <ButzgyCH2@state.gov>
 CC'd: None
-Date: None
-Subject: No Subject
-Body Preview: Verma, Richard R <VermaRR@state.gov>
-Thursday, August 5, 2010 10:14 PM
-Mills, Cheryl D; Abedin, Huma; Sullivan, Jacob J; Rodriguez, Miguel E
-Ambassadors
-We had 31 noms on the Exec Calendar as of tonight. The following 27 made it thru:
-Jeffrey (Iraq)
-Williams (Niger)
-Carter (Cote d'Ivoire)
-Feierstein
+Date: 2010-02-27T18:00:00
+Subject: E-mail test
+Body Preview: Good Afternoon,
+I work as a Help Desk Analyst and it has come to my attention that one of our customers has been receiving permanent
+fatal errors from this address, can you please confirm if you receive this message.
+Thank you for your assistance,
+Christopher
+Christopher Butzgy
+VES-IRM (POEMS)
+202-6
 
 Result 5
-______________________
-Email ID: 3111
-From: Fuchs, Michael H <FuchsMH@state.gov>
-CC'd: Sullivan, Jacob J
-Date: 2010-07-05T02:16:00
-Subject: Statement on Syrian human rights activists for review
-Body Preview: NEA is asking for a statement from you on the sentencing of Syrian human rights activists. White House released a
-statement on this. Draft below:
-Statement by Secretary Clinton
-Syrian Convictions of Human Rights Activists
-The sentencing of Syrian lawyer Haitham Maleh to three years in prison is an e
-
-Result 6
-______________________
-Email ID: 97
+______________________\nEmail ID: 469
 From: 
-CC'd: None
-Date: 2012-09-21T18:37:00
-Subject: RE: Anything to report?
-Body Preview: Sorry — I've been flat out. (And I've agreed to have dinner with Anne-Marie at 7!)
-1. Well get you a new CGI draft tomorrow morning for you to noodle on. Feel free to'call when you've looked at it
-and we can talk about other directions if it doesn't feel right.
-2, Tom met with Barak today; I will ge
-
-Result 7
-______________________
-Email ID: 3996
-From: Slaughter, Anne-Marie <SlaughterA@state.gov>
-CC'd: Sullivan, Jacob J; Abedin, Huma; Mills, Cheryl D
+CC'd: SES-0
 Date: None
-Subject: If bilateral talks fail, a regional approach
-Body Preview: For your Sunday reading, a summary of an interesting proposal by former Jordanian foreign minister Marwan Muasher.
-"Palestinian-Israeli Direct Talks: The Case for a Regional Approach"By Marwan Muasher (Carnegie Endowment Bulletin,
-August 2010)
-Marwan Muasher – former Jordanian foreign minister, amba
-
-Result 8
-______________________
-Email ID: 1257
-From: Fuchs, Michael H <FuchsMH@state.gov>
-CC'd: Sullivan, Jacob J
-Date: 2009-10-19T18:02:00
 Subject: No Subject
-Body Preview: Cc: Sullivan, Jacob J
-Madam Secretary,
-Attached and below please find a brief backgrounder on the United States Institute of Peace. Please let me know if you
-would like any further information.
-Thanks,
-Mike
-United States Institute of Peace: Background
-Proposals for the creation of a government "peac
+Body Preview: Abedin, Huma <AbedinH@state.gov>
+Sunday, May 24, 2009 11:12 PM
+Fw: (AP) North Korea: Nuclear Test
+We are getting press confirmation. EAP is preparing call sheet for possible calls you place to the Japanese and koreans,
+maybe chinese tomorrow morning.
 
-Results in your inbox folder for the following query: john
+Results in your inbox folder for the following query: Details emerging from Benjamin Netanyahu's visit to Washington remain incomplete,
 
 Result 1
-______________________
-Email ID: 3527
-From: Valmoro, Lona J <ValmoroU@state.gov>
-CC'd: Sullivan, Jacob J
-Date: 2010-05-13T07:03:00
-Subject: John Kerry
-Body Preview: Yes, I will work on a visit if you don't have a call set up.
-Lona Valmoro
-Special Assistant to the Secretary of State B6
+______________________\nEmail ID: 2902
+From: 
+CC'd: None
+Date: None
+Subject: No Subject
+Body Preview: sbwhoeop
+Thursday, March 25, 2010 10:16 AM
+H: Haaretz chief columnist on Bibi's visit. Sid
+htto://www. haaretz.com/hasers/spagesil 158992. html
+Aluf Benn / Netanyahu leaves U.S. disgraced, isolated and weaker
+By Ake Berm
+Details emerging from Benjamin Netanyahu's visit to Washington remain incomplet
 
 Result 2
-______________________
-Email ID: 3992
-From: Abedin, Huma <AbedinH@state.gov>
+______________________\nEmail ID: 2892
+From: Huma Abedin
 CC'd: None
-Date: 2010-08-27T10:24:00
-Subject: Eric john
-Body Preview: Info on eric john that u asked for:
-Ops is in contact with Eric, and has passed to him a message that the Secretary has
-been informed and would be available to speak with him at an appropriate moment.
+Date: 2010-03-21T15:58:00
+Subject: Re: Netanyahu
+Body Preview: Yes we figured that?
 
 Result 3
-______________________
-Email ID: 4475
+______________________\nEmail ID: 3695
 From: Abedin, Huma <AbedinH@state.gov>
 CC'd: None
-Date: 2010-11-16T11:04:00
-Subject: Breakfast list
-Body Preview: Howard Berman: yes
-Ileana Ros-Lehtinen: yes
-Nita Lowey: yes
-Ike Skelton: yes
-John Spratt: yes
-Richard Durbin: yes
-John Kerry: yes
-Richard Lugar: yes
-Thad Cochran: yes
-Judd Gregg: no
-Nancy Pelosi: no
-Steny Hoyer: no
-John Boehner: no
-Eric Cantor: no
-Kay Granger: no
-Howard McKeon: no
-Paul Ryan: no
-Harr
+Date: 2010-05-31T10:25:00
+Subject: Fyi
+Body Preview: POLITICO Breaking News:
+Israeli Prime Minister Benjamin Netanyahu has canceled his visit to the White House in the aftermath of the Israeli
+military's action against a flotilla seeking access to Gaza, the AP reports. White House spokesman Bill Burton said in
+advance of Netanyahu's decision that the 
 
 Result 4
-______________________
-Email ID: 1824
-From: Jiloty, Lauren C <JilotyLC@state.gov>
-CC'd: None
-Date: 2009-12-11T07:35:00
-Subject: John Kerry's birthday
-Body Preview: Ok
-
-Result 5
-______________________
-Email ID: 2507
-From: Huma Abedin
-CC'd: None
-Date: 2010-01-12T00:51:00
-Subject: Re: John Gill
-Body Preview: He was very flexible but this week would be great. We can try and do tomorrow.
-
-Result 6
-______________________
-Email ID: 3529
-From: Huma Abedin
-CC'd: 'SullivanJJ@state.gov'
-Date: 2010-05-13T07:06:00
-Subject: Re: John Kerry
-Body Preview: Had not heard but Iona taking care of it.
-
-Result 7
-______________________
-Email ID: 4227
-From: Feltman, Jeffrey D <FeltmanJD@state.gov>
-CC'd: None
-Date: 2010-09-12T12:07:00
-Subject: RE: John Kerry
-Body Preview: I will have with me a big file on this; I raised the case on the margins of Aboul-Gheit's meeting with you on August 30.
-We will work with CA to have a letter prepared to take.
-The case is typical in that the U.S. parent has custody that the Egyptian courts have not yet recognized (case is pending).
-
-Result 8
-______________________
-Email ID: 1751
-From: Abedin, Huma <AbedinH@state.gov>
-CC'd: None
-Date: 2009-11-25T11:15:00
-Subject: Reminder
-Body Preview: John kerry trying to reach you.
-
-Result 9
-______________________
-Email ID: 4547
+______________________\nEmail ID: 3565
 From: Mills, Cheryl D <MillsCD@state.gov>
 CC'd: None
-Date: 2010-10-25T10:32:00
-Subject: FW: Thanks to Secretary Clinton for Participating in the Conference on the Ameri
-Body Preview: Experience in Southeast Asia [John Carland]
-below
-
-Result 10
-______________________
-Email ID: 1880
-From: Huma Abedin <
-CC'd: None
-Date: 2009-12-13T16:43:00
-Subject: Re: Open Skies
-Body Preview: Yes, all emails on this came from john byerly.
-
-Results in your sent folder for the following query: john
-
-Result 1
-______________________
-Email ID: 969
-To: ['Huma Abedin' 'hume abedin' 'Lauren Jiloty']
-CC'd: None
-Date: 2010-01-12T00:49:00
-Subject: John Gill
-Body Preview: When can I call him?
-
-Result 2
-______________________
-Email ID: 1338
-To: ['Huma Abedin' 'Lona Valmoro' 'valmorou@state.gov']
-CC'd: 'sullivanjj@state.gov'
-Date: 2010-05-13T06:55:00
-Subject: John Kerry
-Body Preview: Am I scheduled to talk w him? If not, could you get a call/visit scheduled?
-
-Result 3
-______________________
-Email ID: 791
-To: ['Huma Abedin']
-CC'd: None
-Date: 2009-10-17T16:32:00
-Subject: Re: Another call
-Body Preview: What about John Kerry--can he be included?
-
-Result 4
-______________________
-Email ID: 1171
-To: ['Lauren Jiloty']
-CC'd: None
-Date: 2010-02-10T17:55:00
-Subject: Calls
-Body Preview: I called and talked w INR DAS Jim Buchanan at John Dinger's request. Pls let John know.
-I called Marty Edelman and LM.
+Date: 2010-07-16T14:04:00
+Subject: Heads Up: Netanyahu Tape
+Body Preview: FYI
 
 Result 5
-______________________
-Email ID: 765
-To: ['Lauren Jiloty']
+______________________\nEmail ID: 4243
+From: Sullivan, Jacob 1 <SullivanJJ@state.gov>
 CC'd: None
-Date: 2009-12-11T07:24:00
-Subject: John Kerry's birthday
-Body Preview: Pls add him to call list for today.
+Date: 2010-09-14T17:10:00
+Subject: Fyi
+Body Preview: From Israel Radio
+By Shmuel Tal
+"Prime Minister Exploring a trip to the U.S. next week
+Prime Minister Benjamin Netanyahu is exploring the possibility of leaving at the beginning of next week to New York
+and Washington in order to meet with European leaders under the auspices of a gathering that is i
 
-Result 6
-______________________
-Email ID: 1339
-To: ['Huma Abedin' 'Lona Valmoro' 'valmorou@state.gov']
-CC'd: 'sullivanjj@state.gov'
-Date: 2010-05-13T07:10:00
-Subject: Re: John Kerry
-Body Preview: A call may be more realistic but see what we can do.
+Results in your inbox folder for the following query: Details emerging from Benjamin Netanyahu's visit to Washington remain incomplete,
 
-Result 7
-______________________
-Email ID: 1285
-To: ['Lauren Jiloty']
+Result 1
+______________________\nEmail ID: 2902
+From: 
 CC'd: None
-Date: 2010-05-02T13:22:00
-Subject: Call list
-Body Preview: Pls add:
-Alan Bersin over at DHS.
-John Kerry and note subjects--Asad, Karzai,
+Date: None
+Subject: No Subject
+Body Preview: sbwhoeop
+Thursday, March 25, 2010 10:16 AM
+H: Haaretz chief columnist on Bibi's visit. Sid
+htto://www. haaretz.com/hasers/spagesil 158992. html
+Aluf Benn / Netanyahu leaves U.S. disgraced, isolated and weaker
+By Ake Berm
+Details emerging from Benjamin Netanyahu's visit to Washington remain incomplet
 
-Result 8
-______________________
-Email ID: 768
-To: ['..lilotylc@state.gov.' 'Lauren Jiloty']
+Result 2
+______________________\nEmail ID: 3695
+From: Abedin, Huma <AbedinH@state.gov>
 CC'd: None
-Date: 2009-12-11T07:42:00
-Subject: Re: John Kerry's birthday
-Body Preview: Also pls get me a copy of the President's Nobel speech.
+Date: 2010-05-31T10:25:00
+Subject: Fyi
+Body Preview: POLITICO Breaking News:
+Israeli Prime Minister Benjamin Netanyahu has canceled his visit to the White House in the aftermath of the Israeli
+military's action against a flotilla seeking access to Gaza, the AP reports. White House spokesman Bill Burton said in
+advance of Netanyahu's decision that the 
 
-Result 9
-______________________
-Email ID: 1178
-To: ['Maria Otero']
-CC'd: 'FuchsMH@state.gov'
-Date: 2010-01-31T16:34:00
-Subject: Water
-Body Preview: Former Dep Secretary of State John Whitehead has a private sector group working on water. Pls be sure he is contacted
-as part of our planning.
-
-Result 10
-______________________
-Email ID: 889
-To: ['Cheryl Mills' 'millscd@state.gov.']
-CC'd: None
-Date: 2009-12-21T05:01:00
-Subject: Re: Fwd: 5635
-Body Preview: I caught some of the interview and wondered whether it would cause problems. We have to watch this closely.
-Would John get that written somewhere?
-I'm in the car on my berry if you need me. Thx.
+Result 3
+______________________\nEmail ID: 3420
+From: sbwhoeop
+CC'd: cheryl.mills
+Date: None
+Subject: fYi
+Body Preview: Maariv: Netanyahu won't meet Clinton; 'sources' say she
+"isn't relevant"
+Didi Remez I July 1,2010 at 15:25 I Categories: Diplomacy I URL: http://wp.me/pH1QV-Ep
+Do they honestly think that publicizing a quote like this, on record or off, works to their advantage?
+Israeli diplomatic [euphemism for Pri
 
