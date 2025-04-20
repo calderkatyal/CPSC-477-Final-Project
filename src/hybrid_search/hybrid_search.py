@@ -19,8 +19,8 @@ def get_top_emails(rankings, df, query_len, num_emails, num_results_wanted):
     semantic_rankings, keyword_rankings = rankings
     combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted)
     top_emails = get_top_emails_by_id(combined_rankings, df)
-    print("Email ids and their scores: ")
-    print(combined_rankings)
+    #print("Email ids and their scores: ")
+    #print(combined_rankings)
     return top_emails
 
 def send_top_emails_to_file(top_emails, query, fname, folder):
@@ -44,6 +44,7 @@ def send_top_emails_to_file(top_emails, query, fname, folder):
         outfile.write("Subject: {}\n".format(subject[:80]))
         outfile.write("Body Preview: {}\n".format(body[:300]))
         outfile.write("\n")
+    print("Added output to {}".format(fname))
     outfile.close()
 
 def main():
@@ -82,6 +83,8 @@ def main():
     #outfile = open(fname, "a")
 
     print("Now, you can try some queries.\nBy default, we search the inbox, but you can specify the sent folder.\nEnter '*quit' when prompted for query if you are done.")
+    print("We recommend that you format your query as a question to which the email you want would hold an answer to that question. Rather than 'doctor advice', you might write, 'What did my doctor suggest I do about so-and-so?' This is because the model we use was trained on data that consists of questions and sets of text which are responses or not responses to those questions. We do use a keyword search, so if you are confident about words the email includes, then you can make sure to include those words in your query. We also filter by senders and dates which we extract from your query.")
+    print("Each time you enter a query, you can find the results in added to the file called top_emails.txt.")
     query = ""
     while True:
         query = input("Query: ")
