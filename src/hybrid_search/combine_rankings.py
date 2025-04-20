@@ -1,5 +1,6 @@
 ﻿from typing import List, Tuple
 import heapq
+import math
 
 def min_max_normalize(scores: List[float]) -> List[float]:
     """
@@ -33,14 +34,19 @@ def fill_missing_scores(rankings: List[Tuple[int, float]], num_emails: int) -> L
         filled[email_id - 1] = score
     return filled
 
+def get_semantic_weight(query_len_words: int) -> float:
+    """
+    Compute dynamic semantic weight based on query length in words.
+    Returns a value between 0.25 and 0.75.
+    """
+    return 0.25 + (0.75 - 0.25) * (1 - math.exp(-query_len_words / 7))
+
 def combine_rankings(
     semantic_rankings: List[Tuple[int, float]],
     keyword_rankings: List[Tuple[int, float]],
     query_len: int,
     num_emails: int,
-    num_results_wanted: int,
-    semantic_weight: float = 0.6,
-    keyword_weight: float = 0.4
+    num_results_wanted: int
 ) -> List[Tuple[int, float]]:
     """
     Combines semantic and keyword rankings using normalized weighted sum.
@@ -48,11 +54,9 @@ def combine_rankings(
     Args:
         semantic_rankings: Semantic search results [(email_id, score)].
         keyword_rankings: Keyword search results [(email_id, score)].
-        query_len: Number of tokens in original query.
+        query_len: Number of words in the query.
         num_emails: Total number of emails.
         num_results_wanted: Number of results to return.
-        semantic_weight: Weight for semantic scores.
-        keyword_weight: Weight for keyword scores.
 
     Returns:
         Top N results as list of (email_id, combined_score).
@@ -62,6 +66,9 @@ def combine_rankings(
 
     semantic_scores = min_max_normalize(semantic_scores)
     keyword_scores = min_max_normalize(keyword_scores)
+
+    semantic_weight = get_semantic_weight(query_len)
+    keyword_weight = 1.0 - semantic_weight
 
     combined_scores = [
         (i + 1, semantic_weight * s + keyword_weight * k)
