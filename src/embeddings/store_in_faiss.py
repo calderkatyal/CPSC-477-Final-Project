@@ -60,7 +60,7 @@ def build_faiss_index(embeddings: torch.Tensor) -> faiss.IndexFlatIP:
 
 def main(args):
     print("📥 Loading processed emails...")
-    
+
     df = load_processed_emails()
     inbox_df = df[df["folder"] == "inbox"]
     sent_df = df[df["folder"] == "sent"]
@@ -95,11 +95,9 @@ def main(args):
 
     print("\nDone!")
 
-
 if __name__ == "__main__":
-    # Add optional argument for big_model
     parser = argparse.ArgumentParser(description="Store email embeddings in FAISS index.")
     parser.add_argument("--big_model", action="store_true", help="Use full precision model.")
-    parser.add_argument("--batch_size", type=int, default=3, help="Batch size for embedding emails.")
+    parser.add_argument("--batch_size", type=int, default=1, help="Batch size for embedding emails.")
     args = parser.parse_args()
     main(args)
