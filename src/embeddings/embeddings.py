@@ -60,7 +60,8 @@ class EmailEmbedder:
 
     @torch.inference_mode()
     def embed_query(self, query: str) -> torch.Tensor:
-        task = "Given a web search query, retrieve relevant passages that answer the query"
+        task = "Given an email search query, retrieve the most relevant emails"
+
         formatted_query = f"Instruct: {task}\nQuery: {query}"
 
         encoded_input = self.tokenizer(formatted_query, return_tensors="pt", padding=True, truncation=True, max_length=8192)
