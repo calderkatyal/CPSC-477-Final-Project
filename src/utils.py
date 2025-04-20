@@ -19,6 +19,7 @@ def load_processed_emails() -> pd.DataFrame:
     sent_df["folder"] = "sent"
 
     combined_df = pd.concat([inbox_df, sent_df])
+    #combined_df["Id"] = combined_df["Id"].astype(int)
     combined_df = combined_df.drop_duplicates("Id")
 
     return combined_df

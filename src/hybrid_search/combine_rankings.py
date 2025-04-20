@@ -5,7 +5,6 @@ from src.hybrid_search.semantic_search import semantic_search
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 import statistics #I believe numpy has a compatibility issue with spacy, so using this since it doesn't matter that much I think
-import math
 import heapq
 
 def get_z_scores(scores):
@@ -35,6 +34,8 @@ def insert_zeros_missing_ids(rankings, num_emails):
                 rankings_filled[i-1] = (i, 0)
                 break
             j+=1
+        if j == num_results:
+            rankings_filled[i-1] = (i, 0)
     return rankings_filled
 
 
@@ -76,6 +77,16 @@ def combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails,
 
     top_results = heapq.nlargest(num_results_wanted, combined_scores, key=lambda x: x[1])
     return top_results
+
+def get_top_emails_by_id(top_results, df):
+    top_emails = []
+    for ID, sem_score in top_results:
+     #   print(str(ID))
+      #  print(df[df["Id"] == ID])
+        email = df[df["Id"] == ID].iloc[0]
+        email["score"] = sem_score
+        top_emails.append(email)
+    return top_emails
 
 def main():
     num_emails = 10

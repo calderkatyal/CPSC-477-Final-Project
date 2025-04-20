@@ -20,7 +20,8 @@ def semantic_search(query, index, df, top_k) -> List[Dict]:
     #can make more efficient but not that important
     #also could do this outside and avoid passing df around as a parameter
     for idx, score in zip(indices, scores):
-        email_id = int(df.iloc[idx]["Id"])
+        #email_id = int(df.iloc[idx]["Id"])
+        email_id = idx + 1 #since not using top_k, and this is consistent wih keyword stuff
         email_info = (email_id, score)
         #email = df.iloc[idx].to_dict()
         #email["score"] = float(score)
