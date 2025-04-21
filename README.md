@@ -23,6 +23,12 @@ Clone this directory, and donwnload the requirements:
 pip install -r requirements.txt
 ```
 
+Spin up the docker container: 
+
+```
+docker compose up -d
+```
+
 Ensure you have a valid Kaggle API token at `~/.kaggle/`, and then run:
 
 ```
