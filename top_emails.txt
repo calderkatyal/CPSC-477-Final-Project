@@ -1,72 +1,56 @@
 
 ~~~~~~~~~~~~ QUERY #1 ~~~~~~~~~~~~
 Folder: inbox
-Query: What did Hillary Clinton say about Benghazi in her emails?
+Query: test
 
 Result 1
 ______________________
-Email ID: 142
-From: Mills, Cheryl D <MillsCD@state.gov>
-CC'd: Abedin, Hurna
-Date: 2012-12-20T07:57:00
-Subject: PIN: FOX from Caitlin
-Body Preview: FYSA
-Prom: Laszczych, Joanne
-Sent: Thursday, December 20, 2012 7:57 AM
-To: Mills, Cheryl D
-Subject: FOX from Caitlin
-VAN SUSTEREN: Senator, there is a report from the State Department that Secretary of State Hillary
-Clinton will testify on Benghazi before the middle of January. There has been some criticism of whether or
-not she has a concussion. I believe she has a concussion. What do you think?
-MCCAIN: I know that in my view, Secretary Clinton, when she said she assumed full responsibility, she
-certainly has a lot of responsibility for what happened in Benghazi. That's -- that report made that very
-clear. But I must say, I have never seen Secretary Clinton back down from a fight. And I have
-never seen her back down. And / believe that she is now not physically well enough to testify
-and she will testify the middle of January.
-U.S. Department of State
-Case No. F-2015-04841
-Doc No. C05739855
-Date: 05/13/2015
-STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
-SUBJECT TO AGREEMENT ON 
+Email ID: 355
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2009-04-24T13:27:00
+Subject: Test
+Body Preview: 34
 
 Result 2
 ______________________
-Email ID: 165
-From: Otero, Maria <OteroM2@state.gov>
+Email ID: 3730
+From: Lauren Jiloty
 CC'd: None
-Date: 2012-09-12T06:46:00
-Subject: I am so sorry
-Body Preview: Hillary:
-I'm just boarding plane to Honduras and thinking of you especially with this painful tragedy in Libya.
-Warmest,
-Maria
-U.S. Department of State
-Case No. F-2015-04841
-Doc No. C05739905
-Date: 05/13/2015
-STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
-SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER. STATE-5CB0045242
+Date: 2010-08-23T17:58:00
+Subject: RE: Test
+Body Preview: Received. However, I did not get the one you sent to my state e-mail earlier. There must be some problem with the
+State e-mail filters. I will be monitoring this e-mail closely.
+>
 
 Result 3
 ______________________
-Email ID: 117
-From: Mills, Cheryl D <MillsCD@state.gov>
+Email ID: 2473
+From: Butzgy, Christopher H <ButzgyCH2@state.gov>
 CC'd: None
-Date: 2012-11-22T06:09:00
-Subject: AP - Rice defends Benghazi remarks
-Body Preview: AP - Rice defends Benghazi remarks
-By: Associated Press
-November 21, 2012 07:03 PM EST
-U.S. Ambassador Susan Rice said Wednesday her early account of the attack that killed the U.S. ambassador to Libya and
-three other Americans in Benghazi was based on the initial intelligence community assessments and was always subject
-to review and updates.
-She said she respected Sen. John McCain (R-Ariz.), who has been critical of her, but said "some of the statements he's
-made about me have been unfounded, but I look forward to having the opportunity at the appropriate time to discuss
-all of this with him."
-Her comments attributed the attacks to a mob enraged over an anti-Muslim video posted on YouTube were widely
-denounced by Republicans during the U.S. presidential campaign. The attack came an the 11th anniversary of the Sept.
-11, 2001, terror attacks on the United States, and her critics said it was clearly a terrorist attack timed to take place on
-the anniversary.
-The focus has fallen on her b
+Date: 2010-02-27T18:00:00
+Subject: E-mail test
+Body Preview: Good Afternoon,
+I work as a Help Desk Analyst and it has come to my attention that one of our customers has been receiving permanent
+fatal errors from this address, can you please confirm if you receive this message.
+Thank you for your assistance,
+Christopher
+Christopher Butzgy
+VES-IRM (POEMS)
+202-647-8700
+This e-mail is Unclassified based on the criteria of E.O. 12958
+
+
+~~~~~~~~~~~~ QUERY #2 ~~~~~~~~~~~~
+Folder: sent
+Query: what is my favorite food
+
+Result 1
+______________________
+Email ID: 421
+To: ['Huma Abedin']
+CC'd: None
+Date: 2009-09-16T11:55:00
+Subject: Re: on way back
+Body Preview: Help guide me where to get something good to eat!
 

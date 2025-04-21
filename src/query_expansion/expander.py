@@ -22,6 +22,7 @@ class QueryExpander:
 
         paraphrases = [self.tokenizer.decode(output, skip_special_tokens=True).strip() for output in outputs]
         paraphrases = [p for p in paraphrases if p != query]
+        paraphrases = [p.lower() for p in paraphrases]
         paraphrases = list(set(paraphrases)) 
         return paraphrases
 

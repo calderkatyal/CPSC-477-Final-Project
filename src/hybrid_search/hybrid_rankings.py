@@ -34,12 +34,19 @@ def fill_missing_scores(rankings: List[Tuple[int, float]], num_emails: int) -> L
         filled[email_id - 1] = score
     return filled
 
-def get_semantic_weight(query_len_words: int) -> float:
+import math
+
+def get_semantic_weight(query_len: int) -> float:
     """
-    Compute dynamic semantic weight based on query length in words.
-    Returns a value between 0.25 and 0.75.
+    Logistic-based curve:
+    - Exactly 0.25 at query_len = 1
+    - Exactly 0.50 at query_len = 4
+    - Plateaus at 0.75
     """
-    return 0.25 + (0.75 - 0.25) * (1 - math.exp(-query_len_words / 7))
+
+    growth = 1 / (1 + math.exp(-0.9 * (query_len - 4)))
+    semantic_weight = 0.25 + 0.5 * (growth - 1 / (1 + math.exp(0.9 * 3)))
+    return min(semantic_weight, 0.75)
 
 def combine_rankings(
     semantic_rankings: List[Tuple[int, float]],
@@ -74,6 +81,8 @@ def combine_rankings(
         (i + 1, semantic_weight * s + keyword_weight * k)
         for i, (s, k) in enumerate(zip(semantic_scores, keyword_scores))
     ]
+
+    print(f"ℹ️ Semantic weight: {semantic_weight:.2f}, Keyword weight: {keyword_weight:.2f}")
 
     return heapq.nlargest(num_results_wanted, combined_scores, key=lambda x: x[1])
 

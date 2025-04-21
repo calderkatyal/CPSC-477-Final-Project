@@ -5,6 +5,7 @@ from src.semantic_search.semantic_search import semantic_search
 from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_by_id
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
+from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
 
 def safe_input(prompt: str) -> str:
     val = input(prompt)
@@ -19,7 +20,8 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
     keyword_search_results = []
 
     if search_mode in {"hybrid", "semantic"}:
-        semantic_search_results = semantic_search(query, index, df)
+        semantic_variants = semantic_search(query, index, df)
+        semantic_search_results = reciprocal_rank_fusion(semantic_variants) 
 
     if search_mode in {"hybrid", "keyword"}:
         keyword_search_results = get_keyword_rankings(
@@ -105,6 +107,6 @@ def run_search_interface():
         num_emails = len(df_used)
 
         rankings = hybrid_search(query, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
-        top_emails = get_top_emails(rankings, df_used, len(query), num_emails, num_results_wanted)
+        top_emails = get_top_emails(rankings, df_used, len(query.strip().split()), num_emails, num_results_wanted)
         send_top_emails_to_file(top_emails, query, fname, folder, query_count)
         query_count += 1
