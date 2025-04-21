@@ -1,11 +1,13 @@
 from src.embeddings.embeddings import EmailEmbedder
+from src.query_expansion.expander import QueryExpander
 from typing import List, Tuple
 
 embedder = EmailEmbedder()
+expander = QueryExpander()
 
 def semantic_search(query: str, index, df) -> List[Tuple[int, float]]:
     """
-    Perform semantic search using FAISS over embedded emails.
+    Generate embeddings for the query and its variants, then perform a similarity search using FAISS over email embeddings.
 
     Args:
         query: Natural language query.
@@ -15,8 +17,12 @@ def semantic_search(query: str, index, df) -> List[Tuple[int, float]]:
     Returns:
         List of (email_id, similarity_score) sorted by ID.
     """
-    print("🧠 Embedding query...")
-    query_embedding = embedder.embed_query(query)
+    print("🧠 Generating query variants...")
+    queries = expander.expand(query, num_variants=3) + [query]
+    print(f"Query variants: {queries}")
+    print("🧠 Embedding query and its variants...")
+    query_embeddings = embedder.embed_query(queries)
+    query_embedding = query_embeddings.mean(dim=0, keepdim=True) # TODO: Change this to RRF and also use variants in keyword search
     query_np = query_embedding.cpu().numpy().astype("float32")
 
     print("🔍 Running similarity search...")

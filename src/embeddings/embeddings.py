@@ -59,12 +59,12 @@ class EmailEmbedder:
         return torch.cat(all_embeddings, dim=0)
 
     @torch.inference_mode()
-    def embed_query(self, query: str) -> torch.Tensor:
+    def embed_query(self, queries: List[str]) -> torch.Tensor:
         task = "Given an email search query, retrieve the most relevant emails"
 
-        formatted_query = f"Instruct: {task}\nQuery: {query}"
+        prompts = [f"Instruct: {task}\nQuery: {q}" for q in queries]
 
-        encoded_input = self.tokenizer(formatted_query, return_tensors="pt", padding=True, truncation=True, max_length=8192)
+        encoded_input = self.tokenizer(prompts, return_tensors="pt", padding=True, truncation=True, max_length=8192)
         encoded_input = {k: v.to(self.device) for k, v in encoded_input.items()}
 
         model_output = self.model(**encoded_input)
