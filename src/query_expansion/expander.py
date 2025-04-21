@@ -7,32 +7,26 @@ class QueryExpander:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         self.tokenizer = BartTokenizer.from_pretrained(model_name)
         self.model = BartForConditionalGeneration.from_pretrained(model_name).to(self.device)
-    def expand(self, query: str, num_variants: int = 3) -> List[str]:
+    def expand(self, query: str, num_variants: int = 10) -> List[str]:
         input_ids = self.tokenizer(query, return_tensors="pt", truncation=True, padding="longest").input_ids.to(self.device)
 
         outputs = self.model.generate(
             input_ids,
             max_length=128,
-            num_beams=num_variants * 2,
-            num_return_sequences=num_variants,
-            early_stopping=True,
+            num_beams=1, 
+            num_return_sequences=num_variants * 2,
+            do_sample=True,              
+            top_k=30,                    
+            top_p=0.9,                  
+            temperature=0.95,             
             no_repeat_ngram_size=3,
-            repetition_penalty=1.2,
+            early_stopping=False
         )
-
         paraphrases = [self.tokenizer.decode(output, skip_special_tokens=True).strip() for output in outputs]
         paraphrases = [p for p in paraphrases if p != query]
+        paraphrases += [query]
         paraphrases = [p.lower() for p in paraphrases]
         paraphrases = list(set(paraphrases)) 
         return paraphrases
-
-if __name__ == "__main__":
-    query_expander = QueryExpander()
-    query = input("Enter your query: ")
-    variants = query_expander.expand(query)
-    print("Generated Variants:")
-    for i, variant in enumerate(variants):
-        print(f"{i + 1}: {variant}")
-    print("\n")
 
     
