@@ -68,7 +68,7 @@ def main(args):
     print(f"Inbox: {len(inbox_df)} emails | Sent: {len(sent_df)} emails")
 
     print("Initializing email embedder...")
-    embedder = EmailEmbedder()
+    embedder = EmailEmbedder(seed=args.seed)
     batch_size = args.batch_size
 
     for label, df in [("inbox", inbox_df), ("sent", sent_df)]:
@@ -98,5 +98,6 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Store email embeddings in FAISS index.")
     parser.add_argument("--batch_size", type=int, default=1, help="Batch size for embedding emails.")
+    parser.add_argument("--seed", type=int, default=None, help="Random seed for reproducibility")
     args = parser.parse_args()
     main(args)

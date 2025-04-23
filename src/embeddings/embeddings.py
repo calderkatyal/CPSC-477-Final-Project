@@ -7,11 +7,12 @@ import torch
 from torch import Tensor
 from transformers import AutoTokenizer, AutoModel
 import torch.nn.functional as F
+from src.utils import set_global_seed
 
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:32,expandable_segments:True"
 
 class EmailEmbedder:
-    def __init__(self):
+    def __init__(self, seed: int = None):
         """Initialize email embedder.
         
         """
@@ -25,6 +26,8 @@ class EmailEmbedder:
             device_map={"": self.device},
             trust_remote_code=True
         )
+        if seed is not None:
+            set_global_seed(seed)
 
     @staticmethod
     def last_token_pool(last_hidden_states: Tensor,

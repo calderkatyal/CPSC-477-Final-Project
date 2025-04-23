@@ -2,8 +2,13 @@ from src.embeddings.embeddings import EmailEmbedder
 from src.query_expansion.expander import QueryExpander
 from typing import List, Tuple
 
-embedder = EmailEmbedder()
-expander = QueryExpander()
+embedder = None
+expander = None
+
+def init_semantic_components(seed=None):
+    global embedder, expander
+    embedder = EmailEmbedder(seed=seed)
+    expander = QueryExpander(seed=seed)
 
 def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
     """
@@ -17,7 +22,9 @@ def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
     Returns:
         A list of ranked lists. Each inner list contains (email_id, similarity_score), sorted by similarity score (descending).
     """
-    print("🧠 Generating query variants...")
+    assert embedder is not None and expander is not None
+    
+    print("💡 Generating query variants...")
     queries = expander.expand(query, num_variants=10)
     # print(f"Query variants: {queries}")
 

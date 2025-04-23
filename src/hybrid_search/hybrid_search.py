@@ -6,6 +6,8 @@ from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_b
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
+from src.evaluation.metrics import weighted_kendalls_w, weighted_mse
+from src.semantic_search.semantic_search import init_semantic_components 
 
 def safe_input(prompt: str) -> str:
     val = input(prompt)
@@ -57,7 +59,9 @@ def send_top_emails_to_file(top_emails, query, fname, folder, query_count):
             outfile.write("Body Preview: {}\n\n".format(body[:1000]))
     print(f"✅ Added output to {fname}")
 
-def run_search_interface(is_test=False):
+def run_search_interface(is_test=False, seed: int=None):
+    print("🛠️ Initializing semantic components...")
+    init_semantic_components(seed=seed)
     print("🔄 Loading emails and FAISS index...")
     df = load_processed_emails()
     inbox_index = load_faiss_index("inbox")
@@ -106,18 +110,22 @@ def run_search_interface(is_test=False):
             rankings4 = hybrid_search(query4, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
             
             top_emails1 = get_top_emails(rankings1, df_used, len(query1.strip().split()), num_emails, -1, is_test)
-            top_emails1  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
+            top_emails1  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails1]
 
             top_emails2 = get_top_emails(rankings2, df_used, len(query2.strip().split()), num_emails, -1, is_test)
-            top_emails2  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
+            top_emails2  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails2]
 
             top_emails3 = get_top_emails(rankings3, df_used, len(query3.strip().split()), num_emails, -1, is_test)
-            top_emails3  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
+            top_emails3  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails3]
 
             top_emails4 = get_top_emails(rankings4, df_used, len(query4.strip().split()), num_emails, -1, is_test)
-            top_emails4  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
+            top_emails4  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
 
-
+            emails = [top_emails1, top_emails2, top_emails3, top_emails4]
+            wkw = weighted_kendalls_w(emails)
+            wmse = weighted_mse(emails)
+            print(f"Weighted MSE (0 is ideal:): {wmse:.3f}")
+            print(f"Weighted Kendall's W (1 is ideal): {wkw:.3f}")
         else: 
             query = safe_input("Query: ")
 

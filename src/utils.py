@@ -2,7 +2,13 @@ import os
 import pandas as pd
 import torch
 import faiss
+import random
+import numpy as np
 from src.config import INBOX_PATH, SENT_PATH, FAISS_INDEX_PATH
+
+
+
+
 
 def load_processed_emails() -> pd.DataFrame:
     """
@@ -56,3 +62,13 @@ def faiss_to_device(index: faiss.Index) -> faiss.Index:
         res = faiss.StandardGpuResources()
         return faiss.index_cpu_to_gpu(res, 0, index)
     return index
+
+
+def set_global_seed(seed: int):
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
