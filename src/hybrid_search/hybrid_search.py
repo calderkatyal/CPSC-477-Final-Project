@@ -30,9 +30,9 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
 
     return semantic_search_results, keyword_search_results
 
-def get_top_emails(rankings, df, query_len, num_emails, num_results_wanted):
+def get_top_emails(rankings, df, query_len, num_emails, num_results_wanted, is_test=False):
     semantic_rankings, keyword_rankings = rankings
-    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted)
+    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted, is_test)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
 
@@ -57,7 +57,7 @@ def send_top_emails_to_file(top_emails, query, fname, folder, query_count):
             outfile.write("Body Preview: {}\n\n".format(body[:1000]))
     print(f"✅ Added output to {fname}")
 
-def run_search_interface():
+def run_search_interface(is_test=False):
     print("🔄 Loading emails and FAISS index...")
     df = load_processed_emails()
     inbox_index = load_faiss_index("inbox")
@@ -87,26 +87,58 @@ def run_search_interface():
     print("Enter '*quit' at any prompt to exit.")
 
     while True:
-        query = safe_input("Query: ")
+        if is_test:
+            query1 = safe_input("Query 1: ")
+            query2 = safe_input("Query 2: ")
+            query3 = safe_input("Query 3: ")
+            query4 = safe_input("Query 4: ")
+            folder = safe_input("Folder (inbox/sent): ").lower()
+            search_mode = safe_input("Search mode (hybrid / semantic / keyword): ").lower()
+            while search_mode not in {"hybrid", "semantic", "keyword"}:
+                search_mode = safe_input("Please enter valid mode (hybrid / semantic / keyword): ").lower()
+            df_used = inbox_df if folder == "inbox" else sent_df
+            index = inbox_index if folder == "inbox" else sent_index
+            num_emails = len(df_used)
 
-        num_results_wanted = safe_input("# of results: ")
-        while not num_results_wanted.isdigit():
-            num_results_wanted = safe_input("Please enter a positive integer for # of results: ")
-        num_results_wanted = int(num_results_wanted)
+            rankings1 = hybrid_search(query1, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
+            rankings2 = hybrid_search(query2, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
+            rankings3 = hybrid_search(query3, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
+            rankings4 = hybrid_search(query4, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
+            
+            top_emails1 = get_top_emails(rankings1, df_used, len(query1.strip().split()), num_emails, -1, is_test)
+            top_emails1  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
 
-        folder = safe_input("Folder (inbox/sent): ").lower()
-        while folder not in {"inbox", "sent"}:
-            folder = safe_input("Please enter valid folder (inbox/sent): ").lower()
+            top_emails2 = get_top_emails(rankings2, df_used, len(query2.strip().split()), num_emails, -1, is_test)
+            top_emails2  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
 
-        search_mode = safe_input("Search mode (hybrid / semantic / keyword): ").lower()
-        while search_mode not in {"hybrid", "semantic", "keyword"}:
-            search_mode = safe_input("Please enter valid mode (hybrid / semantic / keyword): ").lower()
+            top_emails3 = get_top_emails(rankings3, df_used, len(query3.strip().split()), num_emails, -1, is_test)
+            top_emails3  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
 
-        df_used = inbox_df if folder == "inbox" else sent_df
-        index = inbox_index if folder == "inbox" else sent_index
-        num_emails = len(df_used)
+            top_emails4 = get_top_emails(rankings4, df_used, len(query4.strip().split()), num_emails, -1, is_test)
+            top_emails4  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails]
 
-        rankings = hybrid_search(query, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
-        top_emails = get_top_emails(rankings, df_used, len(query.strip().split()), num_emails, num_results_wanted)
-        send_top_emails_to_file(top_emails, query, fname, folder, query_count)
-        query_count += 1
+
+        else: 
+            query = safe_input("Query: ")
+
+            num_results_wanted = safe_input("# of results: ")
+            while not num_results_wanted.isdigit():
+                num_results_wanted = safe_input("Please enter a positive integer for # of results: ")
+            num_results_wanted = int(num_results_wanted)
+
+            folder = safe_input("Folder (inbox/sent): ").lower()
+            while folder not in {"inbox", "sent"}:
+                folder = safe_input("Please enter valid folder (inbox/sent): ").lower()
+
+            search_mode = safe_input("Search mode (hybrid / semantic / keyword): ").lower()
+            while search_mode not in {"hybrid", "semantic", "keyword"}:
+                search_mode = safe_input("Please enter valid mode (hybrid / semantic / keyword): ").lower()
+
+            df_used = inbox_df if folder == "inbox" else sent_df
+            index = inbox_index if folder == "inbox" else sent_index
+            num_emails = len(df_used)
+
+            rankings = hybrid_search(query, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
+            top_emails = get_top_emails(rankings, df_used, len(query.strip().split()), num_emails, num_results_wanted, is_test)
+            send_top_emails_to_file(top_emails, query, fname, folder, query_count)
+            query_count += 1

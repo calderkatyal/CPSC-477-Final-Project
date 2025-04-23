@@ -19,7 +19,7 @@ def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
     """
     print("🧠 Generating query variants...")
     queries = expander.expand(query, num_variants=10)
-    print(f"Query variants: {queries}")
+    # print(f"Query variants: {queries}")
 
     print("🧠 Embedding queries...")
     query_embeddings = embedder.embed_query(queries)

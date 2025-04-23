@@ -53,7 +53,8 @@ def combine_rankings(
     keyword_rankings: List[Tuple[int, float]],
     query_len: int,
     num_emails: int,
-    num_results_wanted: int
+    num_results_wanted: int, 
+    eval=False
 ) -> List[Tuple[int, float]]:
     """
     Combines semantic and keyword rankings using normalized weighted sum.
@@ -64,6 +65,7 @@ def combine_rankings(
         query_len: Number of words in the query.
         num_emails: Total number of emails.
         num_results_wanted: Number of results to return.
+        eval: If True, return all results sorted by score. If False, return top N results.
 
     Returns:
         Top N results as list of (email_id, combined_score).
@@ -82,9 +84,11 @@ def combine_rankings(
         for i, (s, k) in enumerate(zip(semantic_scores, keyword_scores))
     ]
 
-    print(f"ℹ️ Semantic weight: {semantic_weight:.2f}, Keyword weight: {keyword_weight:.2f}")
-
-    return heapq.nlargest(num_results_wanted, combined_scores, key=lambda x: x[1])
+    # print(f"ℹ️ Semantic weight: {semantic_weight:.2f}, Keyword weight: {keyword_weight:.2f}")
+    if eval: 
+        return sorted(combined_scores, key=lambda x: x[1], reverse=True)
+    else: 
+        return heapq.nlargest(num_results_wanted, combined_scores, key=lambda x: x[1])
 
 def get_top_emails_by_id(top_results: List[Tuple[int, float]], df) -> List[dict]:
     """

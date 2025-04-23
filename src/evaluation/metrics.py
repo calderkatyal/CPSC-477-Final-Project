@@ -28,19 +28,3 @@ def weighted_mse(scores: List[List[float]]) -> float:
     """
     # TODO: Implement weighted MSE
     pass
-
-def evaluate_search_results(query: str, 
-                          results: List[Dict[str, Any]], 
-                          ground_truth: List[Dict[str, Any]]) -> Dict[str, float]:
-    """Evaluate search results against ground truth.
-
-    Args:
-        query: Search query
-        results: Search results
-        ground_truth: Ground truth results
-
-    Returns:
-        Dictionary of evaluation metrics
-    """
-    # TODO: Implement evaluation against ground truth
-    pass 
