@@ -1,19 +1,48 @@
 
 ~~~~~~~~~~~~ QUERY SET #1 ~~~~~~~~~~~~
 Folder: inbox
-Query 1: 1
-Query 2: 2
-Query 3: 3
-Query 4: 4
+Query 1: this is a test
+Query 2: benghazi
+Query 3: hillary clitnon
+Query 4: what
 Top 4 distinct results across queries: 
 Result 1
 ______________________
-Email ID: 2303
-From: Mills, Cheryl D <MillsCD@state.gov>
+Email ID: 100
+From: Sullivan, Jacob J <SullivanJJ@state.gov>
 CC'd: None
-Date: 2010-02-21T12:15:00
-Subject: Re: call at 3:15pm? will that work?
-Body Preview: great
+Date: None
+Subject: cgi draft v3 092212.docx
+Body Preview: B5
+Megan is working on a development speech but please read the below if you can this afternoon.
+Let me know your thoughts.
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739767
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER. STATE-5CB0045428
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739767
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER.
+ED
+B5
+UNCLASSIF
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739767
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER. STATE-5CB0045429
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739767
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACT
 
 Result 2
 ______________________
@@ -26,21 +55,46 @@ Body Preview: 34
 
 Result 3
 ______________________
-Email ID: 4072
-From: Sullivan, Jacob J <Sullivaral@state.gov>
-CC'd: None
-Date: 2010-09-20T17:13:00
-Subject: Fw: 5+1
-Body Preview: Fyi
+Email ID: 3928
+From: Huma Abedin
+CC'd: H
+Date: 2010-11-18T21:05:00
+Subject: Re: for Hillary
+Body Preview: Ok
 
 Result 4
 ______________________
-Email ID: 807
-From: Mills, Cheryl D <MillsCD@state.gov>
-CC'd: Mills, Cheryl D
-Date: 2009-04-28T05:28:00
-Subject: Fw: 2-pager
-Body Preview: See comments on AMS document I left on you chair today.
-Jim and torn F comments in email below.
-Cdm
+Email ID: 52
+From: Schwerin, Daniel B <SchwerinDB@state.gov>
+CC'd: Sullivan, Jacob J; Abedin, Hurna; Hanley, Monica R
+Date: 2012-10-10T19:55:00
+Subject: Speech draft for Friday at CSIS
+Body Preview: Madam Secretary, here is our latest draft of Friday's speech. It's long — about 30 minutes in this version — but if
+you're comfortable with the general direction we'll streamline it.
+Thanks
+Dan
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739661
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER. STATE-5CB0045603
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739661
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO FOIA WAIVER.
+SECRETARY OF STATE HILLARY RODHAM CLINTON
+REMARKS ON THE MAGHREB IN TRANSITION
+AT THE CENTER FOR STRATEGIC AND INTERNATIONAL STUDIES
+WASHINGTON, DC
+OCMBER 12, 2012
+B5
+U.S. Department of State
+Case No. F-2015-04841
+Doc No. C05739661
+Date: 05/13/2015
+STATE DEPT. - PRODUCED TO HOUSE SELECT BENGHAZI COMM.
+SUBJECT TO AGREEMENT ON SENSITIVE INFORMATION & REDACTIONS. NO
 
