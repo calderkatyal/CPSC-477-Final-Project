@@ -3,11 +3,12 @@ Evaluation metrics for search results.
 """
 from typing import List, Dict
 import numpy as np
+import math
 
-def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]]) -> float:
+def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate=50) -> float:
     """
     Compute a normalized weighted Kendall's W (concordance) across K full lists of {Id, score}.
-    Higher-ranked emails are given more weight (1 / rank). Returns value in [0, 1].
+    Higher-ranked emails are given more weight. Returns value in [0, 1].
 
     Args:
         score_lists: List of K lists of {Id, score}, each representing a query variant.
@@ -33,7 +34,7 @@ def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]]) -> float:
         id_to_rank = {item["Id"]: rank for rank, item in enumerate(result_list)}
         for email_id in email_ids:
             r = id_to_rank[email_id]
-            w = 1.0 / (r + 1)  # Higher ranks get higher weight
+            w = np.exp(-ranks / decay_rate)  # Higher ranks get higher weight
             ranks[email_id].append(r)
             weights[email_id].append(w)
 
@@ -54,7 +55,7 @@ def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]]) -> float:
     max_variance = 0.0
 
     for i in range(K):
-        weights = 1.0 / (reversed_ranks + 1)
+        weights = np.exp(-reversed_ranks / decay_rate)
         mean_rank = np.average(reversed_ranks, weights=weights)
         max_variance += np.dot(weights, (reversed_ranks - mean_rank) ** 2) / weights.sum()
 
@@ -64,10 +65,10 @@ def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]]) -> float:
     return max(0.0, min(1.0, normalized))  # Clamp to [0, 1]
 
 
-def weighted_mse(score_lists: List[List[Dict[str, float]]]) -> float:
+def weighted_mse(score_lists: List[List[Dict[str, float]]], decay_rate=50) -> float:
     """
     Compute weighted MSE across K full lists of {Id, score},
-    weighting higher-ranked emails more (1 / rank).
+    weighting higher-ranked emails more heavily.
     Assumes each list has the exact same set of email IDs.
 
     Args:
@@ -76,6 +77,13 @@ def weighted_mse(score_lists: List[List[Dict[str, float]]]) -> float:
     Returns:
         Weighted MSE (float), normalized to [0, 1].
     """
+
+    ### DEBUGGING ###
+    for i, lst in enumerate(score_lists):
+        scores = [item["score"] for item in lst]
+        print(f"Query {i+1} score range: {min(scores):.3f} to {max(scores):.3f}")
+    ### END DEBUGGING ###
+
     K = len(score_lists)
     if K == 0 or any(len(lst) == 0 for lst in score_lists):
         return 0.0
@@ -92,7 +100,7 @@ def weighted_mse(score_lists: List[List[Dict[str, float]]]) -> float:
         for rank, item in enumerate(result_list):
             email_id = item["Id"]
             score = item["score"]
-            weight = 1.0 / (rank + 1)
+            weight = math.exp(-rank / decay_rate)  # Exponential decay for rank
             id_to_scores[email_id].append(score)
             id_to_weights[email_id].append(weight)
 
@@ -102,9 +110,10 @@ def weighted_mse(score_lists: List[List[Dict[str, float]]]) -> float:
     for email_id in ref_ids:
         scores = np.array(id_to_scores[email_id])
         weights = np.array(id_to_weights[email_id])
-        mean = np.average(scores)
+        mean = np.average(scores, weights=weights)
         squared_errors = (scores - mean) ** 2
         numerator += np.dot(weights, squared_errors)
         denominator += weights.sum()
 
-    return numerator / denominator if denominator > 0 else 0.0
+    raw_mse = numerator / denominator if denominator > 0 else 0.0
+    return min(1.0, raw_mse / 0.25)

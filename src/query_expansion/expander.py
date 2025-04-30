@@ -10,7 +10,7 @@ class QueryExpander:
         self.model = BartForConditionalGeneration.from_pretrained(model_name).to(self.device)
         if seed is not None:
             set_global_seed(seed)
-    def expand(self, query: str, num_variants: int = 10) -> List[str]:
+    def expand(self, query: str, num_variants: int = 4) -> List[str]:
         input_ids = self.tokenizer(query, return_tensors="pt", truncation=True, padding="longest").input_ids.to(self.device)
 
         outputs = self.model.generate(
