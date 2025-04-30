@@ -8,6 +8,7 @@ from src.keyword_search.es_search import create_emails_index, clean_date_formatt
 from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
 from src.evaluation.metrics import weighted_kendalls_w, weighted_mse
 from src.semantic_search.semantic_search import init_semantic_components 
+import heapq
 
 def safe_input(prompt: str) -> str:
     val = input(prompt)
@@ -37,6 +38,51 @@ def get_top_emails(rankings, df, query_len, num_emails, num_results_wanted, is_t
     combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted, is_test)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
+
+def get_best_emails_across_queries(ranked_emails):
+    inverted = [
+        [(-float(email["score"]), str(email["Id"]), email) for email in lst]
+        for lst in ranked_emails
+    ]
+
+    merged = heapq.merge(*inverted)
+
+    seen_emails = set()
+    best_emails = []
+
+    k = 4
+    for _, id_str, item in merged:
+        if id_str not in seen_emails:
+            seen_emails.add(id_str)
+            best_emails.append(item)
+            if len(best_emails) == k:
+                break
+
+    return best_emails
+
+def send_top_emails_across_queries_to_file(top_emails, queries, fname, folder, query_set_count):
+    with open(fname, "a") as outfile:
+        outfile.write(f"\n~~~~~~~~~~~~ QUERY SET #{query_set_count} ~~~~~~~~~~~~\n")
+        outfile.write("Folder: {}\n".format(folder))
+        for i, query in enumerate(queries):
+            outfile.write("Query {}: {}\n".format(i+1, query))
+        outfile.write("Top 4 distinct results across queries: \n")
+        for i, email in enumerate(top_emails):
+            score = email["score"]
+            subject = email.get("ExtractedSubject") or "No Subject"
+            body = email.get("ExtractedBodyText") or "[No Body Content]"
+            outfile.write("Result {}\n".format(i+1))
+            outfile.write("______________________\n")
+            outfile.write("Email ID: {}\n".format(email["Id"]))
+            if folder == "inbox":
+                outfile.write("From: {}\n".format(email["ExtractedFrom"]))
+            else:
+                outfile.write("To: {}\n".format(email["ExtractedTo"]))
+            outfile.write("CC'd: {}\n".format(email["ExtractedCc"]))
+            outfile.write("Date: {}\n".format(email["ExtractedDateSent"]))
+            outfile.write("Subject: {}\n".format(subject[:80]))
+            outfile.write("Body Preview: {}\n\n".format(body[:1000]))
+    print(f"✅ Added output to {fname}")
 
 def send_top_emails_to_file(top_emails, query, fname, folder, query_count):
     with open(fname, "a") as outfile:
@@ -84,7 +130,11 @@ def run_search_interface(is_test=False, seed: int=None):
     create_emails_index(es_client, sent_df, "sent")
 
     fname = "top_emails.txt"
-    open(fname, "w").close()
+    fname_test = "top_across_queries.txt"
+    if is_test:
+        open(fname_test, "w").close()
+    else:
+        open(fname, "w").close()
     query_count = 1
 
     print("Now, you can try some queries.")
@@ -110,18 +160,21 @@ def run_search_interface(is_test=False, seed: int=None):
             rankings4 = hybrid_search(query4, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
             
             top_emails1 = get_top_emails(rankings1, df_used, len(query1.strip().split()), num_emails, -1, is_test)
-            top_emails1  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails1]
+            top_emails1_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails1]
 
             top_emails2 = get_top_emails(rankings2, df_used, len(query2.strip().split()), num_emails, -1, is_test)
-            top_emails2  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails2]
+            top_emails2_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails2]
 
             top_emails3 = get_top_emails(rankings3, df_used, len(query3.strip().split()), num_emails, -1, is_test)
-            top_emails3  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails3]
+            top_emails3_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails3]
 
             top_emails4 = get_top_emails(rankings4, df_used, len(query4.strip().split()), num_emails, -1, is_test)
-            top_emails4  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
+            top_emails4_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
 
-            emails = [top_emails1, top_emails2, top_emails3, top_emails4]
+            emails = [top_emails1_info, top_emails2_info, top_emails3_info, top_emails4_info]
+            queries = [query1, query2, query3, query4]
+            best_emails_across = get_best_emails_across_queries([top_emails1, top_emails2, top_emails3, top_emails4])
+            send_top_emails_across_queries_to_file(best_emails_across, queries, fname_test, folder, query_count)
             wkw = weighted_kendalls_w(emails)
             wmse = weighted_mse(emails)
             print(f"Weighted MSE (0 is ideal:): {wmse:.3f}")
@@ -149,4 +202,4 @@ def run_search_interface(is_test=False, seed: int=None):
             rankings = hybrid_search(query, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
             top_emails = get_top_emails(rankings, df_used, len(query.strip().split()), num_emails, num_results_wanted, is_test)
             send_top_emails_to_file(top_emails, query, fname, folder, query_count)
-            query_count += 1
+        query_count += 1

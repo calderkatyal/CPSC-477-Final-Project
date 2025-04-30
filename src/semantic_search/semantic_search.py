@@ -25,7 +25,7 @@ def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
     assert embedder is not None and expander is not None
     
     print("💡 Generating query variants...")
-    queries = expander.expand(query, num_variants=10)
+    queries = expander.expand(query, num_variants=4)
     # print(f"Query variants: {queries}")
 
     print("🧠 Embedding queries...")

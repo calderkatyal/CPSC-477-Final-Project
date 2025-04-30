@@ -1,0 +1,63 @@
+
+~~~~~~~~~~~~ QUERY SET #1 ~~~~~~~~~~~~
+Folder: inbox
+Query 1: Reports of bombings and other crises
+Top 4 distinct results across queries: 
+Query 2: News about bombings and other emergencies
+Top 4 distinct results across queries: 
+Query 3: Accounts of explosions and related disasters
+Top 4 distinct results across queries: 
+Query 4: Reports concerning explosive attacks and other calamities
+Top 4 distinct results across queries: 
+Result 1
+______________________
+Email ID: 2993
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2010-03-29T09:32:00
+Subject: Statement
+Body Preview: Bombings in Moscow
+Our thoughts and prayers are with the victims of this morning's bombings in Moscow, their families, and all the people
+of Russia. This brutal assault on innocent civilians is another reminder that terrorism is a threat to peace-loving people
+everywhere and must be met with unwavering resolve. I will offer my personal condolences to Foreign Minister Lavrov
+later today in Ottawa. Together with our G8 partners, we will discuss how to improve international counterterrorism
+coordination and cooperation. I was in Moscow earlier this month, and I know the resilience and determination of the
+Russian people. The United States stands with them today and everyday in solidarity against violent extremism in all its
+forms.
+
+Result 2
+______________________
+Email ID: 1198
+From: Campbell, Kurt M <CampbellKM@state.gov>
+CC'd: None
+Date: 2009-10-04T11:01:00
+Subject: Call reports
+Body Preview: Thank you Madame Secretary the information you received from Jakarta is consistent with what we have now heard
+from Indonesians. Scott and I just held an agency wide review of our collective Pacific wide efforts to date and where we
+both need more information and where we are prepared to do more. Our team is doing a full accounting of every effort
+to date and we will have this to you by mid afternoon. We are awaiting word from Luzon and I anticipate that we will
+need to do much more there and in parts of Indonesia in the days ahead. We will be in touch with our interagency
+colleagues throughout the day and will update you again accordingly. Thank you for your efforts and the readouts. I will
+also do follow ups as you request. Best Kurt
+
+Result 3
+______________________
+Email ID: 973
+From: 
+CC'd: SES-O_Shift-III
+Date: None
+Subject: No Subject
+Body Preview: Abedin, Huma <AbedinH@state.gov>
+Thursday, August 13, 2009 3:19 AM
+H
+Fw: Government denies reports bomber to be freed
+
+Result 4
+______________________
+Email ID: 3266
+From: Mills, Cheryl D <MillsCD@state.gov>
+CC'd: Sullivan, Jacob J
+Date: 2010-02-10T19:44:00
+Subject: S saw reports
+Body Preview: Checking
+
