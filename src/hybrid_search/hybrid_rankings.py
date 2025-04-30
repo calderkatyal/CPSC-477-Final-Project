@@ -54,7 +54,7 @@ def combine_rankings(
     query_len: int,
     num_emails: int,
     num_results_wanted: int, 
-    eval=False
+    is_test=False
 ) -> List[Tuple[int, float]]:
     """
     Combines semantic and keyword rankings using normalized weighted sum.
@@ -65,29 +65,43 @@ def combine_rankings(
         query_len: Number of words in the query.
         num_emails: Total number of emails.
         num_results_wanted: Number of results to return.
-        eval: If True, return all results sorted by score. If False, return top N results.
+        is_test: If True, return all results sorted by score. If False, return top N results.
 
     Returns:
         Top N results as list of (email_id, combined_score).
     """
-    semantic_scores = fill_missing_scores(semantic_rankings, num_emails)
-    keyword_scores = fill_missing_scores(keyword_rankings, num_emails)
+    has_semantic = len(semantic_rankings) > 0
+    has_keyword = len(keyword_rankings) > 0
 
-    semantic_scores = min_max_normalize(semantic_scores)
-    keyword_scores = min_max_normalize(keyword_scores)
+    semantic_scores = fill_missing_scores(semantic_rankings, num_emails) if has_semantic else [0.0] * num_emails
+    keyword_scores = fill_missing_scores(keyword_rankings, num_emails) if has_keyword else [0.0] * num_emails
 
-    semantic_weight = get_semantic_weight(query_len)
-    keyword_weight = 1.0 - semantic_weight
+    if has_semantic:
+        semantic_scores = min_max_normalize(semantic_scores)
+    if has_keyword:
+        keyword_scores = min_max_normalize(keyword_scores)
+
+    if has_semantic and has_keyword:
+        semantic_weight = get_semantic_weight(query_len)
+        keyword_weight = 1.0 - semantic_weight
+    elif has_semantic:
+        semantic_weight = 1.0
+        keyword_weight = 0.0
+    elif has_keyword:
+        semantic_weight = 0.0
+        keyword_weight = 1.0
+    else:
+        # fallback
+        return []
 
     combined_scores = [
         (i + 1, semantic_weight * s + keyword_weight * k)
         for i, (s, k) in enumerate(zip(semantic_scores, keyword_scores))
     ]
 
-    # print(f"ℹ️ Semantic weight: {semantic_weight:.2f}, Keyword weight: {keyword_weight:.2f}")
-    if eval: 
+    if is_test:
         return sorted(combined_scores, key=lambda x: x[1], reverse=True)
-    else: 
+    else:
         return heapq.nlargest(num_results_wanted, combined_scores, key=lambda x: x[1])
 
 def get_top_emails_by_id(top_results: List[Tuple[int, float]], df) -> List[dict]:

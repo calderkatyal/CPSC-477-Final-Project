@@ -1,12 +1,21 @@
 
 ~~~~~~~~~~~~ QUERY SET #1 ~~~~~~~~~~~~
 Folder: inbox
-Query 1: this is a test   
-Query 2: emails about benghazi
-Query 3: one plus two equals three
-Query 4: hillary clinton worst emails
+Query 1: 1
+Query 2: 2
+Query 3: 3
+Query 4: 4
 Top 4 distinct results across queries: 
 Result 1
+______________________
+Email ID: 2303
+From: Mills, Cheryl D <MillsCD@state.gov>
+CC'd: None
+Date: 2010-02-21T12:15:00
+Subject: Re: call at 3:15pm? will that work?
+Body Preview: great
+
+Result 2
 ______________________
 Email ID: 355
 From: Abedin, Huma <AbedinH@state.gov>
@@ -15,34 +24,23 @@ Date: 2009-04-24T13:27:00
 Subject: Test
 Body Preview: 34
 
-Result 2
-______________________
-Email ID: 3730
-From: Lauren Jiloty
-CC'd: None
-Date: 2010-08-23T17:58:00
-Subject: RE: Test
-Body Preview: Received. However, I did not get the one you sent to my state e-mail earlier. There must be some problem with the
-State e-mail filters. I will be monitoring this e-mail closely.
->
-
 Result 3
 ______________________
-Email ID: 122
-From: Mills, Cheryl D <MillsCD@stategov>
-CC'd: Kennedy, Patrick F; Reines, Philippe I
-Date: 2012-11-23T18:25:00
-Subject: Re: Monday November 26 from 2:35 - 3:20 pm - Topic - Benghazi B5
-Body Preview: - Benghazi
-Great
+Email ID: 4072
+From: Sullivan, Jacob J <Sullivaral@state.gov>
+CC'd: None
+Date: 2010-09-20T17:13:00
+Subject: Fw: 5+1
+Body Preview: Fyi
 
 Result 4
 ______________________
-Email ID: 125
-From: Valmoro, Lona J ‹ValmoroU c stategov>
-CC'd: Valmoro, Lona 3
-Date: 2012-11-23T19:40:00
-Subject: Re:
-Body Preview: - Benghazi
-Sounds good.
+Email ID: 807
+From: Mills, Cheryl D <MillsCD@state.gov>
+CC'd: Mills, Cheryl D
+Date: 2009-04-28T05:28:00
+Subject: Fw: 2-pager
+Body Preview: See comments on AMS document I left on you chair today.
+Jim and torn F comments in email below.
+Cdm
 

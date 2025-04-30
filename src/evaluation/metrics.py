@@ -34,7 +34,7 @@ def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate=50
         id_to_rank = {item["Id"]: rank for rank, item in enumerate(result_list)}
         for email_id in email_ids:
             r = id_to_rank[email_id]
-            w = np.exp(-ranks / decay_rate)  # Higher ranks get higher weight
+            w = np.exp(-r / decay_rate)  # Higher ranks get higher weight
             ranks[email_id].append(r)
             weights[email_id].append(w)
 
