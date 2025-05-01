@@ -8,55 +8,29 @@
 
 ## Setup
 
-Download `faiss-gpu`
+Note: GPU is not required. We have provided pre-generated embeddings, and any computer with decent RAM should be able to run our code.
 
-```
-conda install -c pytorch faiss-gpu
-```
-
-Download Docker at https://www.docker.com/products/docker-desktop and run the following to ensure it is set up correctly.
+First download Docker at https://www.docker.com/products/docker-desktop and run the following to ensure it is set up correctly:
 
 ```
 docker version
 docker compose version
 ```
 
-Donwload requirements
+Clone this directory, and donwnload the requirements:
 
 ```
 pip install -r requirements.txt
 ```
 
-## Temporary Pipeline (run from ROOT)
-
-Clone this directory
-
-Download dataset
+Spin up the docker container: 
 
 ```
-python setup.py
+docker compose up -d
 ```
 
-Preprocess the data
+Ensure you have a valid Kaggle API token at `~/.kaggle/`, and then run:
 
 ```
-python src/preprocessing/preprocess.py
-```
-
-Spin up the docker container
-
-```
-docker compose up -d 
-```
-
-Store metadate in PostgreSQL
-
-```
-python src/database/insert_metadata.py
-```
-
-To view the data
-
-```
-docker exec -it email_postgres psql -U postgres -d emails_db
+python main.py
 ```
