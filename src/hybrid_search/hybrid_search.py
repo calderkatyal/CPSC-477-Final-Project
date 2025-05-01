@@ -6,7 +6,7 @@ from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_b
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
-from src.evaluation.metrics import weighted_kendalls_w, weighted_mse
+from src.evaluation.metrics import weighted_kendalls_w, pairwise_mse
 from src.semantic_search.semantic_search import init_semantic_components 
 import heapq
 
@@ -176,9 +176,9 @@ def run_search_interface(is_test=False, seed: int=None):
             best_emails_across = get_best_emails_across_queries([top_emails1, top_emails2, top_emails3, top_emails4])
             send_top_emails_across_queries_to_file(best_emails_across, queries, fname_test, folder, query_count)
             wkw = weighted_kendalls_w(emails)
-            wmse = weighted_mse(emails)
-            print(f"Weighted MSE (0 is ideal:): {wmse:.3f}")
-            print(f"Weighted Kendall's W (1 is ideal): {wkw:.3f}")
+            wmse = pairwise_mse(emails)
+            print(f"Weighted MSE (0 = high agreement): {wmse:.3f}")
+            print(f"Weighted Kendall's W (1 = high agreement): {wkw:.3f}")
         else: 
             query = safe_input("Query: ")
 

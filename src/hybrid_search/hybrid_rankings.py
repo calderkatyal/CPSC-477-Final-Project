@@ -117,7 +117,7 @@ def get_top_emails_by_id(top_results: List[Tuple[int, float]], df) -> List[dict]
     """
     top_emails = []
     for email_id, score in top_results:
-        email = df[df["Id"] == email_id].iloc[0]
-        email["score"] = score
-        top_emails.append(email)
+        row = df[df["Id"] == email_id].iloc[0].to_dict()
+        row["score"] = score
+        top_emails.append(row)
     return top_emails

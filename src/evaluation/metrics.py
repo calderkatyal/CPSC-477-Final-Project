@@ -5,19 +5,84 @@ from typing import List, Dict
 import numpy as np
 import math
 
-def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate=50) -> float:
+
+def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate: float = 20.0) -> float:
     """
-    Compute a normalized weighted Kendall's W (concordance) across K full lists of {Id, score}.
-    Higher-ranked emails are given more weight. Returns value in [0, 1].
+    Weighted Kendall’s W using exponential decay to emphasize top-ranked items.
 
     Args:
-        score_lists: List of K lists of {Id, score}, each representing a query variant.
+        score_lists: List of K full lists of {Id, score} dicts.
+        decay_rate: Exponential decay rate for rank-based weighting.
 
     Returns:
-        Normalized weighted Kendall’s W in [0, 1]. Higher is better.
+        Weighted Kendall’s W in [0, 1], where 1 is perfect agreement.
     """
     K = len(score_lists)
-    if K == 0 or any(len(lst) == 0 for lst in score_lists):
+    if K < 2:
+        return 1.0
+
+    ref_ids = set(item["Id"] for item in score_lists[0])
+    for idx, lst in enumerate(score_lists[1:], 1):
+        assert ref_ids == set(item["Id"] for item in lst), f"ID mismatch in list {idx}"
+
+    email_ids = sorted(ref_ids)
+    N = len(email_ids)
+
+    # Get ranks for each email in each list
+    id_to_ranks = {email_id: [] for email_id in email_ids}
+    min_ranks = {}
+    for lst in score_lists:
+        id_to_rank = {item["Id"]: rank for rank, item in enumerate(lst)}
+        for email_id in email_ids:
+            r = id_to_rank[email_id]
+            id_to_ranks[email_id].append(r)
+
+    # Determine weights based on min rank across all lists
+    id_to_weight = {
+        email_id: math.exp(-min(ranks) / decay_rate)
+        for email_id, ranks in id_to_ranks.items()
+    }
+
+    # Compute weighted variance of ranks
+    numerator = 0.0
+    denominator = 0.0
+    for email_id, ranks in id_to_ranks.items():
+        weight = id_to_weight[email_id]
+        mean_rank = np.mean(ranks)
+        for r in ranks:
+            numerator += weight * (r - mean_rank) ** 2
+        denominator += weight * len(ranks)
+
+    observed_variance = numerator / denominator if denominator > 0 else 0.0
+
+    # Compute ideal max variance
+    ideal_ranks = np.arange(N)
+    max_variance = 0.0
+    for _ in range(K):
+        weights = np.array([math.exp(-r / decay_rate) for r in ideal_ranks])
+        mean_rank = np.average(ideal_ranks, weights=weights)
+        max_variance += np.dot(weights, (ideal_ranks - mean_rank) ** 2) / weights.sum()
+    max_variance /= K
+
+    # Normalize to [0, 1]
+    w_w = 1 - (observed_variance / max_variance) if max_variance > 0 else 1.0
+    return min(1.0, max(0.0, w_w))
+
+
+def pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate: float = 20.0) -> float:
+    """
+    Pairwise weighted MSE across K score lists of {Id, score},
+    weighting higher-ranked emails more using exponential decay.
+    
+    Args:
+        score_lists: List of K lists of {Id, score}, each representing a query variant.
+        decay_rate: Controls how quickly weights drop off for lower-ranked emails.
+
+    Returns:
+        Normalized weighted MSE in [0, 1].
+    """
+    K = len(score_lists)
+    if K < 2:
         return 0.0
 
     ref_ids = set(item["Id"] for item in score_lists[0])
@@ -25,95 +90,31 @@ def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate=50
         assert ref_ids == set(item["Id"] for item in lst), f"ID mismatch in list {idx}"
 
     email_ids = sorted(ref_ids)
-    N = len(email_ids)
 
-    ranks = {email_id: [] for email_id in email_ids}
-    weights = {email_id: [] for email_id in email_ids}
-
-    for result_list in score_lists:
-        id_to_rank = {item["Id"]: rank for rank, item in enumerate(result_list)}
+    # Build: email_id → list of (score, rank) for each query
+    score_rank_by_id = {email_id: [] for email_id in email_ids}
+    for lst in score_lists:
+        id_to_score = {item["Id"]: item["score"] for item in lst}
+        id_to_rank = {item["Id"]: rank for rank, item in enumerate(lst)}
         for email_id in email_ids:
-            r = id_to_rank[email_id]
-            w = np.exp(-r / decay_rate)  # Higher ranks get higher weight
-            ranks[email_id].append(r)
-            weights[email_id].append(w)
+            score = id_to_score[email_id]
+            rank = id_to_rank[email_id]
+            score_rank_by_id[email_id].append((score, rank))
 
-    numerator = 0.0
-    denominator = 0.0
-    for email_id in email_ids:
-        r = np.array(ranks[email_id])
-        w = np.array(weights[email_id])
-        mean_rank = np.average(r, weights=w)
-        numerator += np.dot(w, (r - mean_rank) ** 2)
-        denominator += w.sum()
+    total_weighted_error = 0.0
+    total_weight = 0.0
 
-    observed_variance = numerator / denominator if denominator > 0 else 0.0
+    # For every email, compute pairwise MSE of scores across queries
+    for email_id, values in score_rank_by_id.items():
+        for i in range(K):
+            for j in range(i + 1, K):
+                score_i, rank_i = values[i]
+                score_j, rank_j = values[j]
+                weight = math.exp(-min(rank_i, rank_j) / decay_rate)
+                error = (score_i - score_j) ** 2
+                total_weighted_error += weight * error
+                total_weight += weight
 
+    raw_mse = total_weighted_error / total_weight if total_weight > 0 else 0.0
 
-    ideal_max_ranks = np.arange(N)
-    reversed_ranks = np.flip(ideal_max_ranks)
-    max_variance = 0.0
-
-    for i in range(K):
-        weights = np.exp(-reversed_ranks / decay_rate)
-        mean_rank = np.average(reversed_ranks, weights=weights)
-        max_variance += np.dot(weights, (reversed_ranks - mean_rank) ** 2) / weights.sum()
-
-    max_variance /= K
-
-    normalized = 1 - (observed_variance / max_variance) if max_variance > 0 else 1.0
-    return max(0.0, min(1.0, normalized))  # Clamp to [0, 1]
-
-
-def weighted_mse(score_lists: List[List[Dict[str, float]]], decay_rate=50) -> float:
-    """
-    Compute weighted MSE across K full lists of {Id, score},
-    weighting higher-ranked emails more heavily.
-    Assumes each list has the exact same set of email IDs.
-
-    Args:
-        score_lists: List of K lists of {Id, score}, each representing one query variant.
-
-    Returns:
-        Weighted MSE (float), normalized to [0, 1].
-    """
-
-    ### DEBUGGING ###
-    for i, lst in enumerate(score_lists):
-        scores = [item["score"] for item in lst]
-        print(f"Query {i+1} score range: {min(scores):.3f} to {max(scores):.3f}")
-    ### END DEBUGGING ###
-
-    K = len(score_lists)
-    if K == 0 or any(len(lst) == 0 for lst in score_lists):
-        return 0.0
-
-
-    ref_ids = set(item["Id"] for item in score_lists[0])
-    for idx, lst in enumerate(score_lists[1:], start=1):
-        assert ref_ids == set(item["Id"] for item in lst), f"ID mismatch in list {idx}"
-
-    id_to_scores = {email_id: [] for email_id in ref_ids}
-    id_to_weights = {email_id: [] for email_id in ref_ids}
-
-    for result_list in score_lists:
-        for rank, item in enumerate(result_list):
-            email_id = item["Id"]
-            score = item["score"]
-            weight = math.exp(-rank / decay_rate)  # Exponential decay for rank
-            id_to_scores[email_id].append(score)
-            id_to_weights[email_id].append(weight)
-
-    numerator = 0.0
-    denominator = 0.0
-
-    for email_id in ref_ids:
-        scores = np.array(id_to_scores[email_id])
-        weights = np.array(id_to_weights[email_id])
-        mean = np.average(scores, weights=weights)
-        squared_errors = (scores - mean) ** 2
-        numerator += np.dot(weights, squared_errors)
-        denominator += weights.sum()
-
-    raw_mse = numerator / denominator if denominator > 0 else 0.0
-    return min(1.0, raw_mse / 0.25)
+    return min(1.0, raw_mse / 0.25) 
