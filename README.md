@@ -29,8 +29,20 @@ Spin up the docker container:
 docker compose up -d
 ```
 
-Ensure you have a valid Kaggle API token at `~/.kaggle/`, and then run:
+Ensure you have a valid Kaggle API token at `~/.kaggle/`.
+
+## Launch the Email Search Engine
+
+To run the email search engine, run the following command in the root directory of this repository:
 
 ```
 python main.py
+```
+
+## Evaluations
+
+To recreate our evaluations, run the following command in the root directory of this repository:
+
+```
+python main.py --is_test --seed=42
 ```
