@@ -6,7 +6,7 @@ from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_b
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
-from src.evaluation.metrics import weighted_consistency_top_k, weighted_kendalls_w, pairwise_mse
+from src.evaluation.metrics import weighted_consistency_top_k, weighted_kendalls_w, weighted_pairwise_mse
 from src.semantic_search.semantic_search import init_semantic_components 
 import heapq
 
@@ -33,9 +33,9 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
 
     return semantic_search_results, keyword_search_results
 
-def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, is_test=False, use_perplexity=False):
+def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, top_n=10, is_test=False):
     semantic_rankings, keyword_rankings = rankings
-    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, is_test, use_perplexity)
+    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, top_n, is_test)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
 
@@ -172,11 +172,15 @@ def run_search_interface(is_test=False, seed: int=None):
             top_emails4_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
 
             emails = [top_emails1_info, top_emails2_info, top_emails3_info, top_emails4_info]
+
+            import pdb
+            pdb.set_trace()
+            
             queries = [query1, query2, query3, query4]
             best_emails_across = get_best_emails_across_queries([top_emails1, top_emails2, top_emails3, top_emails4])
             send_top_emails_across_queries_to_file(best_emails_across, queries, fname_test, folder, query_count)
             wkw = weighted_kendalls_w(emails)
-            wmse = pairwise_mse(emails)
+            wmse = weighted_pairwise_mse(emails)
             ctk = weighted_consistency_top_k(emails)
             print(f"Weighted MSE (0 = high agreement): {wmse:.3f}")
             print(f"Weighted Kendall's W (1 = high agreement): {wkw:.3f}")
