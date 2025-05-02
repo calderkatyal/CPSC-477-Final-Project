@@ -1,6 +1,22 @@
-﻿from typing import List, Tuple
+﻿import torch
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from typing import List, Tuple
 import heapq
 import math
+import statistics
+
+model_name = "gpt2" 
+tokenizer = GPT2Tokenizer.from_pretrained(model_name)
+model = GPT2LMHeadModel.from_pretrained(model_name)
+model.eval()
+
+def compute_perplexity(query):
+    query_with_context = f"Email content: {query}"
+    inputs = tokenizer(query_with_context, return_tensors="pt")
+    with torch.no_grad():
+        outputs = model(**inputs, labels = inputs["input_ids"])
+        loss = outputs.loss
+    return math.exp(loss.item())
 
 def min_max_normalize(scores: List[float]) -> List[float]:
     """
@@ -34,27 +50,49 @@ def fill_missing_scores(rankings: List[Tuple[int, float]], num_emails: int) -> L
         filled[email_id - 1] = score
     return filled
 
-import math
+def sigmoid_weight(perplexity: float, midpoint: float = 2500, steepness: float = 0.002) -> float:
+    return 1 / (1 + math.exp(steepness * (perplexity - midpoint)))
 
-def get_semantic_weight(query_len: int) -> float:
-    """
-    Logistic-based curve:
-    - Exactly 0.25 at query_len = 1
-    - Exactly 0.50 at query_len = 4
-    - Plateaus at 0.75
-    """
+def get_z_score_top10(score_list):
+    score_list_sorted = sorted(score_list, key=lambda x: x[1], reverse=True)
+    scores = [email[1] for email in score_list_sorted]
+    mean_all = statistics.mean(scores)
+    std_all = statistics.stdev(scores)
 
-    growth = 1 / (1 + math.exp(-0.9 * (query_len - 4)))
-    semantic_weight = 0.25 + 0.5 * (growth - 1 / (1 + math.exp(0.9 * 3)))
-    return min(semantic_weight, 0.75)
+    top10 = score_list_sorted[:10]
+    z_scores_top10 = [(x - mean_all) / std_all if std_all > 0 else 0 for x in top10]
+    ave_zscore_top10 = statistics.mean(z_scores_top10)
+    return(ave_zscore_top10)
+
+def top10_stand_out(ave_zscore_top10):
+    return ave_zscore_top10 >= 2
+
+def get_semantic_weight(query_len: int, query: str, use_perplexity: bool, semantic_score_list, keyword_score_list) -> float:
+    semantic_weight = 0.5
+    
+    if use_perplexity:
+        query_perplexity = compute_perplexity(query)
+        semantic_weight = sigmoid_weight(query_perplexity)
+
+    if (len(semantic_score_list) > 200) and (len(keyword_score_list) > 200):
+        top10_stand_out_semantic = top10_stand_out(get_z_score_top10(semantic_score_list))
+        top10_stand_out_keyword = top10_stand_out(get_z_score_top10(keyword_score_list))
+        if top10_stand_out_semantic and (not top10_stand_out_keyword):
+            semantic_weight += 0.25
+        elif (not top10_stand_out_semantic) and top10_stand_out_keyword:
+            semantic_weight -= 0.25
+
+    return max(min(semantic_weight, 0.8), 0.2)
 
 def combine_rankings(
     semantic_rankings: List[Tuple[int, float]],
     keyword_rankings: List[Tuple[int, float]],
+    query: str,
     query_len: int,
     num_emails: int,
     num_results_wanted: int, 
-    is_test=False
+    is_test=False,
+    use_perplexity=False,
 ) -> List[Tuple[int, float]]:
     """
     Combines semantic and keyword rankings using normalized weighted sum.
@@ -82,18 +120,16 @@ def combine_rankings(
         keyword_scores = min_max_normalize(keyword_scores)
 
     if has_semantic and has_keyword:
-        semantic_weight = get_semantic_weight(query_len)
-        keyword_weight = 1.0 - semantic_weight
+        semantic_weight = get_semantic_weight(query_len, query, use_perplexity, semantic_rankings, keyword_rankings)
     elif has_semantic:
         semantic_weight = 1.0
-        keyword_weight = 0.0
     elif has_keyword:
         semantic_weight = 0.0
-        keyword_weight = 1.0
     else:
         # fallback
         return []
 
+    keyword_weight = 1.0 - semantic_weight
     combined_scores = [
         (i + 1, semantic_weight * s + keyword_weight * k)
         for i, (s, k) in enumerate(zip(semantic_scores, keyword_scores))

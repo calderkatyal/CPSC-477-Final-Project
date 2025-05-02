@@ -33,9 +33,9 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
 
     return semantic_search_results, keyword_search_results
 
-def get_top_emails(rankings, df, query_len, num_emails, num_results_wanted, is_test=False):
+def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, is_test=False, use_perplexity=False):
     semantic_rankings, keyword_rankings = rankings
-    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted, is_test)
+    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, is_test, use_perplexity)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
 
@@ -159,16 +159,16 @@ def run_search_interface(is_test=False, seed: int=None):
             rankings3 = hybrid_search(query3, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
             rankings4 = hybrid_search(query4, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
             
-            top_emails1 = get_top_emails(rankings1, df_used, len(query1.strip().split()), num_emails, -1, is_test)
+            top_emails1 = get_top_emails(rankings1, df_used, query1, len(query1.strip().split()), num_emails, -1, is_test)
             top_emails1_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails1]
 
-            top_emails2 = get_top_emails(rankings2, df_used, len(query2.strip().split()), num_emails, -1, is_test)
+            top_emails2 = get_top_emails(rankings2, df_used, query2, len(query2.strip().split()), num_emails, -1, is_test)
             top_emails2_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails2]
 
-            top_emails3 = get_top_emails(rankings3, df_used, len(query3.strip().split()), num_emails, -1, is_test)
+            top_emails3 = get_top_emails(rankings3, df_used, query3, len(query3.strip().split()), num_emails, -1, is_test)
             top_emails3_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails3]
 
-            top_emails4 = get_top_emails(rankings4, df_used, len(query4.strip().split()), num_emails, -1, is_test)
+            top_emails4 = get_top_emails(rankings4, df_used, query4, len(query4.strip().split()), num_emails, -1, is_test)
             top_emails4_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
 
             emails = [top_emails1_info, top_emails2_info, top_emails3_info, top_emails4_info]

@@ -44,7 +44,7 @@ def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
             email_id = int(df.iloc[idx]["Id"])
             results.append((email_id, float(score)))
 
-        results = sorted(results, key=lambda x: x[1], reverse=True)
+        results = sorted(results, key=lambda x: x[0], reverse=True)
         results_per_variant.append(results)
 
     return results_per_variant
