@@ -8,7 +8,7 @@ DATASET = "kaggle/hillary-clinton-emails"
 FILES = [
     "Aliases.csv",
     "EmailReceivers.csv",
-    "Emails.csv",  # <- this one will come zipped
+    "Emails.csv",  
     "Persons.csv"
 ]
 os.makedirs(RAW_DIR, exist_ok=True)
@@ -27,14 +27,13 @@ for file in FILES:
         force=True
     )
 
-    # Only Emails.csv comes down as a ZIP (Emails.csv.zip)
+   
     if file == "Emails.csv":
         zip_path = os.path.join(RAW_DIR, f"{file}.zip")
 
-        # Rename the downloaded file to match the real ZIP filename
+     
         os.rename(file_path, zip_path)
 
-        # Extract it
         print(f"  📂 Extracting: {zip_path}")
         with zipfile.ZipFile(zip_path, "r") as zip_ref:
             zip_ref.extractall(RAW_DIR)

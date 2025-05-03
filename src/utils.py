@@ -7,9 +7,6 @@ import numpy as np
 from src.config import INBOX_PATH, SENT_PATH, FAISS_INDEX_PATH
 
 
-
-
-
 def load_processed_emails() -> pd.DataFrame:
     """
     Load inbox and sent emails, filter out rows with missing body text,
