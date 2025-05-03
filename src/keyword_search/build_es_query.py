@@ -62,7 +62,7 @@ def parse_query(query: str, persons_to_aliases: Dict[str, List[str]]) -> Dict[st
         "relevant_text": relevant_text
     }
     return query_info
-
+"""
 def build_es_query_from_parsed(parsed_query: Dict[str, Any]) -> Dict[str, Any]:
     es_query = {
         "query": {
@@ -95,6 +95,54 @@ def build_es_query_from_parsed(parsed_query: Dict[str, Any]) -> Dict[str, Any]:
         })
 
     return es_query
+"""
+
+def build_es_query_from_parsed(parsed_query: Dict[str, Any]) -> Dict[str, Any]:
+    es_query = {
+        "query": {
+            "bool": {
+                "must": [
+                    {
+                        "multi_match": {
+                            "query": parsed_query["relevant_text"],
+                            "fields": ["subject", "body"]
+                        }
+                    }
+                ],
+                "should": [],
+                "filter": [] 
+            }
+        }
+    }
+
+    #Boost if sender match
+    if parsed_query.get("possible_senders"):
+        for sender in parsed_query["possible_senders"]:
+            es_query["query"]["bool"]["should"].append({
+                "match": {
+                    "ExtractedFrom": {
+                        "query": sender,
+                        "boost": 2.0
+                    }
+                }
+            })
+
+    #Boost if date within range
+    if parsed_query.get("date_range"):
+        start_date = parsed_query["date_range"]["start_date"].strftime("%Y-%m-%d")
+        end_date = parsed_query["date_range"]["end_date"].strftime("%Y-%m-%d")
+        es_query["query"]["bool"]["should"].append({
+            "range": {
+                "ExtractedDateSent": {
+                    "gte": start_date,
+                    "lt": end_date,
+                    "boost": 1.5
+                }
+            }
+        })
+
+    return es_query
+
 
 def build_es_query(query: str, persons_to_aliases: Dict[str, List[str]]) -> Dict[str, Any]:
     parsed = parse_query(query, persons_to_aliases)
