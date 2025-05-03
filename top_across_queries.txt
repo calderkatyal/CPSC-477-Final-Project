@@ -1,16 +1,252 @@
 
 ~~~~~~~~~~~~ QUERY SET #1 ~~~~~~~~~~~~
 Folder: inbox
-Query 1: this is a test
-Query 2: this is a test
-Query 3: this is a test
-Query 4: this is a test
+Query 1: t
+Query 2: t
+Query 3: t
+Query 4: t
 Top 4 distinct results across queries: 
+Result 1
+______________________
+Email ID: 3835
+From: Jiloty, Lauren C <JilotyLC@state.gov>
+CC'd: Abedin, Hume
+Date: 2010-09-02T08:17:00
+Subject: Mini Schedule 9/2/10 Thursday
+Body Preview: 8:15 am DEPART Private Residence *En route State Department
+8:25 am ARRIVE State Department
+8:25 am PRESIDENTIAL DAILY BRIEFING
+8:30 am Secretary's Office
+8:30 am DAILY SMALL STAFF MEETING
+8:45 am Secretary's Office
+8:45 am DAILY SENIOR STAFF MEETING
+9:15 am Secretary's Conference Room
+9:15 am PREP MEETING
+9:45 am Secretary's Outer Office
+10:00 am TRILATERAL w/ISRAELI PM BINYAMIN NETANYAHU AND
+10:30 am (t) PALESTIAN NATIONAL AUTHORITY PRESIDENT MAHMOUD
+ABBAS Benjamin Franklin Room, 8`h Floor
+10:30 am (t) TRILAT w/ISFtAELI PM BINYAMIN NETANYAHU, PALESTIAN
+11:30 am (t) NAT'L AUTHORITY PRES. MAHMOUD ABBAS, & SPECIAL
+ENVOY GEORGE MITCHELL Secretary's Outer Office, 7th Floor
+11:30 am (t) BILATERAL w/ ISRAELI PM BINYAMIN NETANYAHU AND
+12:30 pm (t) PALESTIAN NATIONAL AUTHORITY PRESIDENT MAHMOUD
+ABBAS Secretary's Outer Office, 7th Floor
+12:30 pm (t) OFFICE TIME
+6:00 pm (t) Secretary's Office
+6:00 pm (t) DEPART State Department *En route Private Residence
+6:10 pm (t) ARRIVE Private Residence
+##
+
+Result 2
+______________________
+Email ID: 3729
+From: Jiloty, Lauren C <JilotyLC@state.gov>
+CC'd: Abedin, Huma
+Date: 2010-08-13T07:47:00
+Subject: Mini Schedule 8/13/10 Friday
+Body Preview: 8:15 am DEPART Private Residence 'En route State Department
+8:25 am ARRIVE State Department
+8:25 am PRESIDENTIAL DAILY BRIEFING
+8:30 am Secretary's Office
+8:30 am DAILY SMALL STAFF MEETING
+8:45 am Secretary's Office
+8:45 am DAILY SENIOR STAFF MEETING
+9:15 am Secretary's Conference Room
+9:30 am MEETING w/ERIC GOOSBY
+10:00 am Secretary's Office
+10:15 am PHOTOS
+10:30 am Secretary's Office *Jared Cohen, Paul Narain (wife:
+Julianna Bentes)
+10:30 am OFFICE TIME
+11:30 pm Secretary's Office
+Yale Alumni (Jake,
+11:30 am PHONE CALL w/ KENYAN PM RAILA ODINGA
+11:40 am Secretary's Office
+12:00 pm PHONE CALL w/COLOMBIAN FM MARIA ANGELA HOLGUIN
+12:10 pm Secretary's Office
+12:15 pm UNGA MEETING
+12:45pm Secretary's Outer Office
+12:45 pm OFFICE TIME
+1:20pm Secretary's Office
+1:20 pm (t) DEPART State Department *En route Washington National Airport
+1:40 pm (t) ARRIVE Washington National Airport
+2:00 pm (t) DEPART Washington National Airport via US Airways Shuttle #2174
+En route New York, NY
+3:25 pm (t) AR
+
+Result 3
+______________________
+Email ID: 2353
+From: Jiloty, Lauren C <JilotyLC@state.gov>
+CC'd: Abedin, Huma
+Date: 2010-02-24T08:17:00
+Subject: No Subject
+Body Preview: 7:55 am ARRIVE State Department
+8:00 am COFFEE w/JEFF IMMELT AND INDRA NOOYI
+8:30 am Secretary's Outer Office
+8:30 am DAILY SENIOR STAFF MEETING
+8:45 am Secretary's Conference Room
+8:45 am MEETING ON THE SHANGHAI EXPO
+9:30 am Secretary's Outer Office
+9:30 am PRIVATE DROP-BY w/ "WILL-I-AM"
+9:40 am Secretary's Outer Office
+9:45 am
+9:50 am
+PHOTO OP
+Treaty Room
+9:55 am DEPART State Department *En route Dirksen Senate Office Building
+10:10 am ARRIVE Dirlcsen Senate Office Building
+10:15 am PULL-ASIDE MEETING w/SENATORS LEAHY AND GREGG
+10:25 am 105 Dirksen Senate Office Building
+10:30 am TESTIMONY BEFORE SENATE APPROPRIATIONS SUBCOMMITTEE
+12:30 pm (t) ON STATE AND FOREIGN OPERATIONS
+192 Dirksen Senate Office Building
+12:35 pm (t) DEPART Dirksen Senate Office Building
+En route Russell Senate Office Building
+12:40 pm (t) ARRIVE Russell Senate Office Building
+12:40 pm RIBBON-CUTTING CEREMONY FOR THE DEPARTMENT'S
+12:50 pm SENATE LIAISON OFFICE 189 Russell Senate Office Building
+12:50 pm DEPART R
+
+Result 4
+______________________
+Email ID: 488
+From: Jiloty, Lauren C <JilotyLC@state.gov>
+CC'd: Abedin, Huma
+Date: 2009-06-05T08:17:00
+Subject: Mini Schedule Friday 6/5/09
+Body Preview: 11:40 am (t) ARRIVE State Department
+12:00 pm BILATERAL w/PORTUGUESE FOREIGN MINISTER LUIS AMADO
+12:30 pm Secretary's Conference Room *Official photo in East Hall preceding.
+12:30 pm PROTOCOL OF EXCHANGE OF INSTRUMENTS OF RATIFICATION
+12:45 pm CEREMONY w/PORTUGUESE F.M. LUIS AMADO Treaty Room
+12:45 pm OFFICE TIME
+1:30 pm Secretary's Office
+1:30 pm BILATERAL w/TURIUSH F.M. AHMET DAVUTOGLU
+2:30 pm Secretary's Conference Room *Official photo in East Hall preceding.
+2:30 pm PRESS AVAIL Iv/TURKISH F.M. DAVUTOGLU
+2:40 pm Treaty Room
+2:45 pm BILATERAL w/KOREAN F.M. YU MYUNG-HWAN
+3:15 pm Deputy Secretary's Conference Room *Camera Spray in Treaty Room following.
+3:15 pm MEETING w/TODD STERN
+4:00 pm Secretary's Office
+4:00 pm MEETING w/ARTURO VALENZUELA, NOMINEE FOR ASST.
+4:15 pm SEC'Y OF STATE FOR WESTERN HEMISPHERE AFFAIRS Secretary's Office
+4:30 pm (t) DEPART State Department *En route Private Residence
+4:40 pm (t) ARRIVE Private Residence
+4:40 pm PERSONAL TIME
+5:30 pm Private Residence
+5:30 
+
 
 ~~~~~~~~~~~~ QUERY SET #2 ~~~~~~~~~~~~
 Folder: inbox
-Query 1: this is a test
-Query 2: this is a test
-Query 3: this is a test
-Query 4: this is a test
+Query 1: this
+Query 2: way 
+Query 3: hey
+Query 4: what's
 Top 4 distinct results across queries: 
+Result 1
+______________________
+Email ID: 1128
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2009-09-16T11:47:00
+Subject: on way back
+Body Preview: The photog will shoot you when you return and are getting out of car.
+Come up to 7, not straight to 8.
+44
+
+Result 2
+______________________
+Email ID: 7
+From: Sullivan, Jacob J <SullivanJJ@state.gov>
+CC'd: None
+Date: None
+Subject: hey
+Body Preview: Fyi
+
+Result 3
+______________________
+Email ID: 1131
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2009-09-16T11:53:00
+Subject: RE: on way back
+Body Preview: The cafeteria, sitting in the outside courtyard Hes excited about that
+
+Result 4
+______________________
+Email ID: 1133
+From: Abedin, Huma <AbedinH@state.gov>
+CC'd: None
+Date: 2009-09-16T12:01:00
+Subject: RE: on way back
+Body Preview: Its what I do well!
+
+
+~~~~~~~~~~~~ QUERY SET #3 ~~~~~~~~~~~~
+Folder: inbox
+Query 1: hey
+Query 2: what's
+Query 3: up
+Query 4: this
+Top 4 distinct results across queries: 
+Result 1
+______________________
+Email ID: 4706
+From: Sullivan, Jacob J <SullivanJJ@state.gov>
+CC'd: Abedin, Huma
+Date: 2010-12-17T10:42:00
+Subject: FW: Note for Secretary Clinton
+Body Preview: See below.
+
+Result 2
+______________________
+Email ID: 4705
+From: 
+CC'd: None
+Date: None
+Subject: No Subject
+Body Preview: PVerveer B6
+Friday, December 17, 2010 12:12 AM
+From B6
+Please
+let me know if I can be of any help to your department and will happy to do and please thank
+Mrs. Hillary Clinton on behalf of me and
+. supporting Afghan women.
+•Thank you,
+B6
+B6
+B6
+B6
+B6
+B6
+B6
+B6
+
+Result 3
+______________________
+Email ID: 4704
+From: Verma, Richard R <VermaRR@state.gov>
+CC'd: Sullivan, Jacob J; Mills, Cheryl D; Abedin, Huma
+Date: 2010-12-16T20:09:00
+Subject: Senate
+Body Preview: Big change of plans in the Senate. Senator Reid just announced that he was no longer going to move forward with the
+omnibus appropriations bill. Instead, he filed cloture motions on the repeal of Don't Ask, Don't Tell and the DREAM
+Act.
+Those petitions will ripen on Saturday. So it looks like the Senate will be again considering the new START Treaty
+tomorrow. We should know the starting time shortly.
+
+Result 4
+______________________
+Email ID: 4703
+From: Jake Sullivan _
+CC'd: None
+Date: None
+Subject: Fwd: FW: Richard (TNR)
+Body Preview: B6
+I assume you saw this by now -- if not, it's worth a read.
+Forwarded message
+

@@ -23,12 +23,70 @@ def weighted_consistency_top_k(ranked_lists, ks = (10, 20), weights = (0.7, 0.3)
     weighted_score = sum(w*s for w,s in zip(weights, scores))
     return weighted_score
 
-def weighted_kendalls_w(rank_lists: List[List[Dict[str, float]]]) -> float:
+def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate: float = 20.0) -> float:
     """
-    Computes basic Kendall's W coefficient of concordance with print statements.
-    Returns 1.0 for perfect agreement, 0.0 for no agreement.
+    Computes weighted Kendall's W coefficient measuring ranking agreement.
+    Emphasizes agreement on top-ranked items through exponential decay weighting.
+    
+    Args:
+        score_lists: List of K lists of {Id, score}, each representing a ranking
+        decay_rate: Controls how quickly weights decrease with rank (higher = slower decay)
+        
+    Returns:
+        Weighted Kendall's W between 0 (no agreement) and 1 (perfect agreement)
     """
-    return 0
+    K = len(score_lists)
+    if K < 2:
+        return 1.0  # Perfect agreement with only one list
+
+    # Get all email IDs from the first list
+    email_ids = [item["Id"] for item in score_lists[0]]
+    N = len(email_ids)
+    if N == 0:
+        return 1.0  # No items to rank
+
+    # Build dictionary mapping email ID to its ranks across all systems
+    ranks_by_id = {}
+    for email_id in email_ids:
+        ranks_by_id[email_id] = []
+        for lst in score_lists:
+            for rank, item in enumerate(lst):
+                if item["Id"] == email_id:
+                    ranks_by_id[email_id].append(rank)
+                    break
+    
+    # Calculate variance for each item's ranks across systems
+    # Higher variance means more disagreement about the item's rank
+    variances = {}
+    for email_id, ranks in ranks_by_id.items():
+        if len(ranks) <= 1:
+            variances[email_id] = 0
+        else:
+            mean_rank = sum(ranks) / len(ranks)
+            variances[email_id] = sum((r - mean_rank)**2 for r in ranks) / len(ranks)
+    
+    # Apply exponential weights based on best (lowest) rank
+    weights = {}
+    for email_id, ranks in ranks_by_id.items():
+        best_rank = min(ranks)
+        weights[email_id] = math.exp(-best_rank / decay_rate)
+    
+    # Calculate weighted average variance
+    total_weight = sum(weights.values())
+    if total_weight == 0:
+        return 1.0  # Edge case - no weights
+        
+    weighted_avg_variance = sum(weights[email_id] * variances[email_id] 
+                               for email_id in email_ids) / total_weight
+    
+    # Normalize to [0,1] where 1 is perfect agreement
+    # Maximum variance for N ranks is (N²-1)/12
+    max_variance = (N**2 - 1) / 12 if N > 1 else 1
+    
+    # Convert to agreement score (1 = perfect agreement, 0 = no agreement)
+    agreement = 1.0 - (weighted_avg_variance / max_variance if max_variance > 0 else 0)
+    
+    return min(1.0, max(0.0, agreement))
 
 
 def weighted_pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate: float = 20.0) -> float:
@@ -43,12 +101,19 @@ def weighted_pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate:
     Returns:
         Normalized weighted MSE in [0, 1].
     """
-    import pdb
-    pdb.set_trace()
+
     K = len(score_lists)
     if K < 2:
         return 0.0
 
+    # print length of each list
+    for idx, lst in enumerate(score_lists):
+        print(f"List {idx} length: {len(lst)}")
+    import pdb
+    pdb.set_trace()
+    
+    """"
+    
     ref_ids = set(item["Id"] for item in score_lists[0])
     for idx, lst in enumerate(score_lists[1:], start=1):
         assert ref_ids == set(item["Id"] for item in lst), f"ID mismatch in list {idx}"
@@ -79,6 +144,8 @@ def weighted_pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate:
                 total_weighted_error += weight * error
                 total_weight += weight
 
-    raw_mse = total_weighted_error / total_weight if total_weight > 0 else 0.0
+    mse = total_weighted_error / total_weight if total_weight > 0 else 0.0
 
-    return min(1.0, raw_mse / 0.25) 
+    return min(1.0, mse ) 
+    """
+    return 0

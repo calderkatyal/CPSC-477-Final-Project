@@ -33,9 +33,9 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
 
     return semantic_search_results, keyword_search_results
 
-def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, top_n=10, is_test=False):
+def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, is_test=False):
     semantic_rankings, keyword_rankings = rankings
-    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, top_n, is_test)
+    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, is_test=is_test)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
 
@@ -172,9 +172,6 @@ def run_search_interface(is_test=False, seed: int=None):
             top_emails4_info  = [{"Id": int(email["Id"]), "score": email["score"]} for email in top_emails4]
 
             emails = [top_emails1_info, top_emails2_info, top_emails3_info, top_emails4_info]
-
-            import pdb
-            pdb.set_trace()
             
             queries = [query1, query2, query3, query4]
             best_emails_across = get_best_emails_across_queries([top_emails1, top_emails2, top_emails3, top_emails4])
@@ -206,6 +203,6 @@ def run_search_interface(is_test=False, seed: int=None):
             num_emails = len(df_used)
 
             rankings = hybrid_search(query, index, df_used, es_client, persons_to_aliases_dict, folder, search_mode)
-            top_emails = get_top_emails(rankings, df_used, len(query.strip().split()), num_emails, num_results_wanted, is_test)
+            top_emails = get_top_emails(rankings, df_used, query, len(query.strip().split()), num_emails, num_results_wanted, is_test)
             send_top_emails_to_file(top_emails, query, fname, folder, query_count)
         query_count += 1
