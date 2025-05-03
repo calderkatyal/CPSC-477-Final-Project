@@ -1,9 +1,10 @@
 torch>=2.1.0
 transformers>=4.38.0
 faiss-cpu>=1.7.4
+accelerate>=0.27.2
 spacy>=3.7.0
 dateparser>=1.1.8
-elasticsearch>=8.12.0
+elasticsearch>=8.13.0
 pandas>=2.2.0
 tqdm>=4.66.1
 kaggle>=1.6.6
