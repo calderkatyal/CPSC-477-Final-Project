@@ -26,7 +26,6 @@ def get_persons_to_aliases_dict():
     persons_to_aliases = persons_map.groupby('Name')['Alias'].apply(list).to_dict()
     return persons_to_aliases
 
-#also maybe add parsing out recipients as well
 def parse_query(query: str, persons_to_aliases: Dict[str, List[str]]) -> Dict[str, Any]:
     doc = nlp(query)
 
@@ -53,6 +52,9 @@ def parse_query(query: str, persons_to_aliases: Dict[str, List[str]]) -> Dict[st
         date_range = {"start_date": start_date, "end_date": end_date}
 
     relevant_text = " ".join([token.text for token in doc if (token.is_alpha and not token.is_stop)])
+    
+    if not relevant_text.strip():
+        relevant_text = query.lower().strip()
 
     query_info = {
         "possible_senders": sender_aliases,

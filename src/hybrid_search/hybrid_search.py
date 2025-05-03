@@ -35,7 +35,7 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
 
 def get_top_emails(rankings, df, query, query_len, num_emails, num_results_wanted, is_test=False):
     semantic_rankings, keyword_rankings = rankings
-    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query, query_len, num_emails, num_results_wanted, is_test=is_test)
+    combined_rankings = combine_rankings(semantic_rankings, keyword_rankings, query_len, num_emails, num_results_wanted, is_test=is_test)
     top_emails = get_top_emails_by_id(combined_rankings, df)
     return top_emails
 

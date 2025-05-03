@@ -68,7 +68,6 @@ def get_semantic_weight(query_len: int, semantic_score_list, keyword_score_list,
 def combine_rankings(
     semantic_rankings: List[Tuple[int, float]],
     keyword_rankings: List[Tuple[int, float]],
-    query: str,
     query_len: int,
     num_emails: int,
     num_results_wanted: int,

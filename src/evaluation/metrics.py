@@ -105,14 +105,6 @@ def weighted_pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate:
     K = len(score_lists)
     if K < 2:
         return 0.0
-
-    # print length of each list
-    for idx, lst in enumerate(score_lists):
-        print(f"List {idx} length: {len(lst)}")
-    import pdb
-    pdb.set_trace()
-    
-    """"
     
     ref_ids = set(item["Id"] for item in score_lists[0])
     for idx, lst in enumerate(score_lists[1:], start=1):
@@ -147,5 +139,3 @@ def weighted_pairwise_mse(score_lists: List[List[Dict[str, float]]], decay_rate:
     mse = total_weighted_error / total_weight if total_weight > 0 else 0.0
 
     return min(1.0, mse ) 
-    """
-    return 0
