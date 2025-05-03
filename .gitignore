@@ -1,6 +1,7 @@
 data/
 __pycache__/
 .DS_Store
-*.txt
 *.parquet
 *.csv
+top_across_queries.txt
+top_emails.txt
