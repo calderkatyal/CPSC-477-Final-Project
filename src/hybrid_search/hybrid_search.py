@@ -25,6 +25,7 @@ def hybrid_search(query: str, index, df, es_client, persons_to_aliases_dict, fol
     if search_mode in {"hybrid", "semantic"}:
         semantic_variants = semantic_search(query, index, df)
         semantic_search_results = reciprocal_rank_fusion(semantic_variants) 
+        semantic_search_results = sorted(semantic_search_results, key=lambda x: x[0])
 
     if search_mode in {"hybrid", "keyword"}:
         keyword_search_results = get_keyword_rankings(
