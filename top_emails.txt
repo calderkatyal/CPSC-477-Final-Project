@@ -1,51 +1,89 @@
 
 ~~~~~~~~~~~~ QUERY #1 ~~~~~~~~~~~~
 Folder: inbox
-Query: Expressing gratitude or praise
+Query: From Andrew Shapiro
 
 Result 1
 ______________________
-Email ID: 274
-From: Mills, Cheryl D <MillsCD@state.gov>
-CC'd: None
-Date: 2009-05-01T14:33:00
-Subject: FW: High Praise Indeed
-Body Preview: Enjoy — see message below Pfs
+Email ID: 445
+From: Reines, Philippe I <reinesp@state.gov>
+CC'd: Abedin, Huma; Sullivan, Jacob 1
+Date: 2009-06-03T15:40:00
+Subject: AJS Hearing Highlights
+Body Preview: * Miguel: "Andrew did great this afternoon. FYI, Lowey delivered HRC's statement. Very well received."
+* Richard Fontaine: "Andrew is not even rocking - just tapping his foot. Did y'all train him for.this or something?? And
+half the room are Shapiros, it's like his friggin Bahr Mitzvah."
+* Former NSC staffer Michael Allen: "Shapiro son removed from the room, screaming bloody murder in the hallway."
+* Mike Feldman: "Jon Lovett removed from the room, screaming bloody murder in the hallway."
+* Laurie Rubiner: "Jim Webb arrives, looks typically angry."
+* Derek Chollet: "Shapiro comes out strong against piracy. Bold stand."
+* Jon Lovett: "Jeanne Shaheen listening very closely. Barbara Boxer is distracted. The other anonymous old men on dais
+seem confused and unsure where they are."
+Hearing concludes at 3:33:43 PM EDT
+2014-20439 Doc No. C05761605 Date: 06/30/2015
 
 Result 2
 ______________________
-Email ID: 1894
-From: Cheryl Mills <
-CC'd: 'Carpenter, Margaret V.W.
-Date: 2009-12-14T03:50:00
-Subject: FW: Just a Thank You
-Body Preview: fyi
+Email ID: 1431
+From: Shapiro, Andrew J <ShapiroA@state.gov>
+CC'd: None
+Date: 2009-10-10T11:17:00
+Subject: Out of Office AutoReply:
+Body Preview: I will be out of the office until Tuesday, October 13 with limited access to e-mail. If you need immediate assistance,
+please contact Pat Grimes at 202-647-9022.
+Andrew J. Shapiro
+Assistant Secretary for Political-Military Affairs Department of State
+2201 C Street, NW
+Washington, DC 20520
 
 Result 3
 ______________________
-Email ID: 2343
-From: sbwhoeor
-CC'd: MillsCD@state.gov <MillsCD@state.gov>; SullivanJJ@state.gov <Sullivanil@state.gov>
-Date: 2010-02-05T07:24:00
-Subject: Re: Bravo! Brava! Issue your statement! Sid
-Body Preview: Ambos at event would praise your role
-Sent via Cingular Xpress Mail with Blackberry
+Email ID: 4203
+From: Shapiro, Andrew J <ShapiroA@state.gov>
+CC'd: None
+Date: 2010-09-10T09:11:00
+Subject: Out of Office AutoReply:
+Body Preview: I will be out of the office until Friday September 3 with limited access to e-mail. If you need immediate assistance, please
+contact Nadia Brown at 202-647-9022.
+Andrew J. Shapiro
+Assistant Secretary for Political-Military Affairs Department of State
+2201 C Street, NW
+Washington, DC 20520
 
 Result 4
 ______________________
-Email ID: 2035
-From: Mills, Cheryl D <MillsCD©state.gov>
+Email ID: 985
+From: 
 CC'd: None
-Date: 2009-12-22T20:33:00
-Subject: Fw: Thank You
-Body Preview: Nice
+Date: None
+Subject: No Subject
+Body Preview: Madam Secretary,
+Shapiro, Andrew J <ShapiroA@state.gov>
+Friday, August 14, 2009 6:17 PM
+H
+Sullivan, Jacob
+Colombia Defense Cooperation agreement
+Our chief negotiator for the Defense Cooperation Agreement (DCA) just reported that a provisional agreement has been
+reached with the Colombians. It will have to go through translation and other scrubbing over the next couple of weeks
+before its ready to be signed but this should be good news for your proposed meeting with Foreign Minister Bermudez
+next week. Please let me know if you have any questions.
+Andrew
+7
 
 Result 5
 ______________________
-Email ID: 1018
-From: Muscatine, Lissa <MuscatineL@state.gov>
+Email ID: 3727
+From: Abedin, Huma <AbedinH@state.gov>
 CC'd: None
-Date: 2009-07-16T08:39:00
-Subject: Re: Thank you!!!
-Body Preview: Always glad to pitch in. It came out great and your delivery was fantastic! Onward and upward!
+Date: 2010-08-23T11:15:00
+Subject: No Subject
+Body Preview: Call participants:
+Counselor Cheryl Mills
+Senator George Mitchell
+Mr. Dennis Ross
+Mr. Dan Shapiro
+Assistant Secretary Jeff Feltman
+Deputy Assistant Secretary Jake Wailes
+Deputy Special Envoy David Hale
+Ms. Huma Abedin
 
