@@ -6,7 +6,7 @@ from src.hybrid_search.hybrid_rankings import combine_rankings, get_top_emails_b
 from src.keyword_search.build_es_query import get_persons_to_aliases_dict
 from src.keyword_search.es_search import create_emails_index, clean_date_formatting_for_matching, get_keyword_rankings
 from src.query_expansion.rrf_fusion import reciprocal_rank_fusion
-from src.evaluation.metrics import weighted_consistency_top_k, weighted_kendalls_w, weighted_pairwise_mse
+from src.evaluation.metrics import weighted_kendalls_w, weighted_pairwise_mse
 from src.semantic_search.semantic_search import init_semantic_components 
 import heapq
 
