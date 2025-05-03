@@ -1,4 +1,7 @@
 import os
+
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE" 
+
 import subprocess
 import argparse
 from src.config import DATA_DIR, PROCESSED_DIR
