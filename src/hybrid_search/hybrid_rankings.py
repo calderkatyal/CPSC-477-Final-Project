@@ -38,32 +38,18 @@ def fill_missing_scores(rankings: List[Tuple[int, float]], num_emails: int) -> L
         filled[email_id - 1] = score
     return filled
 
-def get_z_score_top_n(score_list: List[Tuple[int, float]], top_n: int) -> float:
-    score_list_sorted = sorted(score_list, key=lambda x: x[1], reverse=True)
-    scores = [email[1] for email in score_list_sorted]
-    mean_all = statistics.mean(scores)
-    std_all = statistics.stdev(scores)
+def get_semantic_weight(query_len: int) -> float:
+    """
+    Logistic-based curve:
+    - Exactly 0.25 at query_len = 1
+    - Exactly 0.50 at query_len = 4
+    - Plateaus at 0.75
+    """
 
-    top_n_scores = score_list_sorted[:top_n]
-    z_scores_top_n = [(x[1] - mean_all) / std_all if std_all > 0 else 0 for x in top_n_scores]
-    return statistics.mean(z_scores_top_n)
+    growth = 1 / (1 + math.exp(-0.9 * (query_len - 4)))
+    semantic_weight = 0.25 + 0.5 * (growth - 1 / (1 + math.exp(0.9 * 3)))
+    return min(semantic_weight, 0.75)
 
-def top_n_stand_out(ave_zscore: float) -> bool:
-    return ave_zscore >= 2
-
-def get_semantic_weight(query_len: int, semantic_score_list, keyword_score_list, top_n: int = 10) -> float:
-    semantic_weight = 0.5
-
-    if (len(semantic_score_list) > 200) and (len(keyword_score_list) > 200):
-        top_n_standout_semantic = top_n_stand_out(get_z_score_top_n(semantic_score_list, top_n))
-        top_n_standout_keyword = top_n_stand_out(get_z_score_top_n(keyword_score_list, top_n))
-        
-        if top_n_standout_semantic and not top_n_standout_keyword:
-            semantic_weight += 0.25
-        elif not top_n_standout_semantic and top_n_standout_keyword:
-            semantic_weight -= 0.25
-
-    return max(min(semantic_weight, 0.8), 0.2)
 
 def combine_rankings(
     semantic_rankings: List[Tuple[int, float]],
@@ -101,7 +87,7 @@ def combine_rankings(
 
     if has_semantic and has_keyword:
         print(f"➕ Combining rankings...")
-        semantic_weight = get_semantic_weight(query_len, semantic_rankings, keyword_rankings, top_n)
+        semantic_weight = get_semantic_weight(query_len)
     elif has_semantic:
         semantic_weight = 1.0
     elif has_keyword:

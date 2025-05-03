@@ -22,8 +22,10 @@ def semantic_search(query: str, index, df) -> List[List[Tuple[int, float]]]:
     Returns:
         A list of ranked lists. Each inner list contains (email_id, similarity_score), sorted by similarity score (descending).
     """
-    assert embedder is not None and expander is not None
     
+    assert embedder is not None and expander is not None
+    print("🔍 Conducting semantic search...")
+   
     print("💡 Generating query variants...")
     queries = expander.expand(query, num_variants=4)
     # print(f"Query variants: {queries}")
