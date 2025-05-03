@@ -6,23 +6,6 @@ import numpy as np
 import math
 from collections import Counter
 
-def consistency_top_k(ranked_lists, top_k):
-    id_counts = Counter()
-    for lst in ranked_lists:
-        top_k_emails = lst[:top_k]
-        id_counts.update(email["Id"] for email in top_k_emails)
-
-    score = sum(math.sqrt(c-1) for c in id_counts.values() if c>1)
-
-    num_lists = len(ranked_lists)
-    max_poss_score = top_k * math.sqrt(num_lists - 1) if num_lists > 1 else 1.0
-    return score / max_poss_score
-
-def weighted_consistency_top_k(ranked_lists, ks = (10, 20), weights = (0.7, 0.3)):
-    scores = [consistency_top_k(ranked_lists, k) for k in ks]
-    weighted_score = sum(w*s for w,s in zip(weights, scores))
-    return weighted_score
-
 def weighted_kendalls_w(score_lists: List[List[Dict[str, float]]], decay_rate: float = 20.0) -> float:
     """
     Computes weighted Kendall's W coefficient measuring ranking agreement.

@@ -182,7 +182,6 @@ def run_search_interface(is_test=False, seed: int=None):
             ctk = weighted_consistency_top_k(emails)
             print(f"Weighted MSE (0 = high agreement): {wmse:.3f}")
             print(f"Weighted Kendall's W (1 = high agreement): {wkw:.3f}")
-            print(f"Weighted Consistency Top K (1 = high agreement): {ctk:.3f}")
         else: 
             query = safe_input("Query: ")
 
