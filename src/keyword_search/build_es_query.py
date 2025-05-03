@@ -119,7 +119,7 @@ def build_es_query_from_parsed(parsed_query: Dict[str, Any]) -> Dict[str, Any]:
     if parsed_query.get("possible_senders"):
         for sender in parsed_query["possible_senders"]:
             es_query["query"]["bool"]["should"].append({
-                "match_phrase": {
+                "match": {
                     "ExtractedFrom": {
                         "query": sender,
                         "boost": 2.0

@@ -27,7 +27,7 @@ def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, folde
                 "properties": {
                     "ExtractedSubject": {"type": "text"},
                     "ExtractedBodyText": {"type": "text"},
-                    "ExtractedFrom": {"type": "keyword"},
+                    "ExtractedFrom": {"type": "text"},
                     "ExtractedTo": {"type": "keyword"},
                     "ExtractedCc": {"type": "keyword"},
                     "ExtractedDateSent": {"type": "date"},
