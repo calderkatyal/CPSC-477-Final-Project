@@ -121,7 +121,11 @@ def run_search_interface(is_test=False, seed: int=None):
     sent_df["Id"] = sent_df.index + 1
 
     persons_to_aliases_dict = get_persons_to_aliases_dict()
-    es_client = Elasticsearch("http://localhost:9200")
+    es_client = Elasticsearch(
+        "http://localhost:9200",
+        verify_certs=False,   
+        ssl_show_warn=False   
+    )
 
     if not es_client.ping():
         print("❌ Failed to connect to Elasticsearch.")
