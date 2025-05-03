@@ -90,6 +90,7 @@ def combine_rankings(
     Returns:
         Top N results as list of (email_id, combined_score).
     """
+    
     semantic_scores = fill_missing_scores(semantic_rankings, num_emails) if has_semantic else [0.0] * num_emails
     keyword_scores = fill_missing_scores(keyword_rankings, num_emails) if has_keyword else [0.0] * num_emails
 
@@ -99,6 +100,7 @@ def combine_rankings(
         keyword_scores = min_max_normalize(keyword_scores)
 
     if has_semantic and has_keyword:
+        print(f"➕ Combining rankings...")
         semantic_weight = get_semantic_weight(query_len, semantic_rankings, keyword_rankings, top_n)
     elif has_semantic:
         semantic_weight = 1.0

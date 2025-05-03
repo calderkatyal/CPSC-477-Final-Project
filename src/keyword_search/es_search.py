@@ -57,6 +57,7 @@ def create_emails_index(es_client: Elasticsearch, emails_df: pd.DataFrame, folde
     bulk(es_client, actions)
 
 def get_keyword_rankings(es_client: Elasticsearch, query: str, folder_name, num_emails_wanted, persons_to_aliases_dict: Dict[str,List[str]]) -> List[Dict[str, Any]]:
+    print(f"🔍 Conducting keyword search...")
     es_query = build_es_query(query, persons_to_aliases_dict)
 
     num_emails_wanted = max(num_emails_wanted, 500)
