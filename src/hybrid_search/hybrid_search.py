@@ -179,7 +179,6 @@ def run_search_interface(is_test=False, seed: int=None):
             send_top_emails_across_queries_to_file(best_emails_across, queries, fname_test, folder, query_count)
             wkw = weighted_kendalls_w(emails)
             wmse = weighted_pairwise_mse(emails)
-            ctk = weighted_consistency_top_k(emails)
             print(f"Weighted MSE (0 = high agreement): {wmse:.3f}")
             print(f"Weighted Kendall's W (1 = high agreement): {wkw:.3f}")
         else: 
